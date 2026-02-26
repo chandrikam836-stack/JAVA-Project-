@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Management System – Free Books</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root{
+  --primary:#2c3e50;--accent:#3498db;--success:#2ecc71;
+  --danger:#e74c3c;--gold:#f39c12;--purple:#8e44ad;
+  --bg:#f4f6f9;--card:#fff;--shadow:0 4px 16px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#333;min-height:100vh}
+
+/* NAV */
+header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+nav{display:flex;justify-content:space-between;align-items:center;padding:.85rem 2rem;max-width:1300px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--primary);cursor:pointer;white-space:nowrap}
+.menu{display:flex;list-style:none;gap:1.2rem}
+.menu a{text-decoration:none;color:#555;font-weight:500;font-size:.9rem;transition:color .2s}
+.menu a:hover,.menu a.active{color:var(--accent)}
+.search-wrap{display:flex;flex:1;max-width:420px}
+.search-wrap select{padding:.48rem .7rem;border:1px solid #ddd;border-right:none;border-radius:6px 0 0 6px;background:#f8f8f8;font-size:.85rem;cursor:pointer}
+.search-wrap input{flex:1;padding:.48rem .75rem;border:1px solid #ddd;font-size:.88rem;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap button{padding:.48rem .85rem;background:var(--accent);border:none;border-radius:0 6px 6px 0;color:#fff;cursor:pointer;transition:background .2s}
+.search-wrap button:hover{background:#2382c4}
+.auth-btns{display:flex;align-items:center;gap:.4rem}
+.auth-btns span{font-weight:500;color:var(--primary);font-size:.88rem;white-space:nowrap}
+.auth-btns button{padding:.4rem .9rem;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:500;font-family:inherit;transition:opacity .2s}
+.btn-login{background:var(--accent);color:#fff}
+.btn-signup{background:var(--success);color:#fff}
+.btn-logout{background:var(--danger);color:#fff}
+
+/* MAIN */
+main{max-width:1300px;margin:0 auto;padding:2rem}
+.page{display:none}
+.page.active{display:block}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.75rem;flex-wrap:wrap;align-items:center}
+.tab-btn{padding:.45rem 1.1rem;border:2px solid #dde1e7;border-radius:25px;background:#fff;
+  cursor:pointer;font-size:.85rem;font-weight:500;color:#666;transition:all .2s;font-family:inherit}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-btn:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+.tab-count{background:rgba(0,0,0,.12);color:inherit;font-size:.72rem;padding:.1rem .4rem;border-radius:10px;margin-left:.3rem}
+
+/* BANNER */
+.banner{border-radius:14px;overflow:hidden;position:relative;height:300px;margin-bottom:2.5rem;box-shadow:var(--shadow)}
+.banner img{width:100%;height:100%;object-fit:cover}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(44,62,80,.78),rgba(44,62,80,.15));
+  display:flex;flex-direction:column;justify-content:center;padding:2.5rem 3rem}
+.banner-overlay h1{font-family:'Playfair Display',serif;font-size:2.1rem;color:#fff;margin-bottom:.6rem}
+.banner-overlay p{color:rgba(255,255,255,.88);max-width:480px;margin-bottom:1rem}
+.badge-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .75rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(46,204,113,.9);color:#fff}
+.badge-blue{background:rgba(52,152,219,.9);color:#fff}
+.badge-purple{background:rgba(142,68,173,.9);color:#fff}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+.stat-card{background:#fff;border-radius:10px;padding:.75rem 1.25rem;box-shadow:var(--shadow);display:flex;align-items:center;gap:.75rem;flex:1;min-width:140px}
+.stat-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff}
+.stat-icon.blue{background:var(--accent)}
+.stat-icon.green{background:var(--success)}
+.stat-icon.purple{background:var(--purple)}
+.stat-icon.gold{background:var(--gold)}
+.stat-val{font-size:1.25rem;font-weight:700;color:var(--primary);line-height:1}
+.stat-lbl{font-size:.75rem;color:#888;margin-top:.15rem}
+
+/* SECTION HEADING */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.sec-head h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary)}
+.see-all{color:var(--accent);font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:none;padding:0}
+.see-all:hover{text-decoration:underline}
+
+/* HORIZONTAL SCROLL ROW */
+.book-row{display:flex;gap:1.1rem;overflow-x:auto;padding-bottom:.75rem;scroll-snap-type:x mandatory}
+.book-row::-webkit-scrollbar{height:5px}
+.book-row::-webkit-scrollbar-track{background:#eee;border-radius:3px}
+.book-row::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+
+/* GRID */
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1.25rem}
+
+/* BOOK CARD */
+.book-card{background:#fff;border-radius:10px;box-shadow:var(--shadow);padding:.9rem;text-align:center;
+  position:relative;transition:transform .2s,box-shadow .2s;cursor:pointer;min-width:175px;flex-shrink:0;scroll-snap-align:start;
+  animation:fadeUp .35s ease both;display:flex;flex-direction:column}
+.book-card:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.book-cover{width:100%;height:220px;object-fit:cover;border-radius:7px;margin-bottom:.7rem;background:#e8ecf0}
+.cover-ph{width:100%;height:220px;border-radius:7px;margin-bottom:.7rem;
+  background:linear-gradient(135deg,#dde3ea,#c8d1db);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:#9aaabb}
+.book-title{font-weight:600;font-size:.88rem;color:var(--primary);margin-bottom:.2rem;line-height:1.3}
+.book-author{color:#888;font-size:.8rem;margin-bottom:.4rem}
+.book-genre{font-size:.73rem;color:#aaa;margin-bottom:.6rem}
+.ribbon{position:absolute;top:8px;left:8px;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:4px;letter-spacing:.4px;color:#fff;z-index:2}
+.r-free{background:var(--success)}
+.r-pdf{background:var(--danger)}
+.r-gut{background:var(--purple)}
+.card-btns{display:flex;gap:.35rem;margin-top:auto;padding-top:.5rem}
+.card-btns a,.card-btns button{flex:1;padding:.38rem .2rem;border:none;border-radius:5px;font-size:.76rem;font-weight:600;
+  font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.25rem;text-decoration:none;transition:opacity .2s}
+.card-btns a:hover,.card-btns button:hover{opacity:.83}
+.cb-read{background:var(--success);color:#fff}
+.cb-pdf{background:var(--danger);color:#fff}
+.cb-epub{background:var(--purple);color:#fff}
+.cb-info{background:var(--accent);color:#fff}
+
+/* SOURCE PILL */
+.src-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;color:#777;margin-bottom:.4rem}
+.src-dot{width:6px;height:6px;border-radius:50%}
+.dot-gut{background:var(--purple)}.dot-ol{background:var(--gold)}.dot-ia{background:#27ae60}.dot-std{background:var(--accent)}
+
+/* SEARCH RESULTS PAGE */
+.results-bar{display:flex;align-items:baseline;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
+.results-bar h1{font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--primary)}
+.res-count{color:#888;font-size:.9rem}
+.free-bar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;background:linear-gradient(135deg,#eafaf1,#d5f5e3);
+  border:1px solid #a9dfbf;border-radius:10px;padding:.65rem 1.1rem;margin-bottom:1.5rem;font-size:.85rem;color:#1e8449}
+.free-bar strong{font-weight:600}
+.back-lnk{display:inline-flex;align-items:center;gap:.4rem;color:var(--accent);font-weight:500;font-size:.88rem;
+  margin-bottom:1.25rem;cursor:pointer;border:none;background:none;font-family:inherit}
+.back-lnk:hover{text-decoration:underline}
+
+/* LOADING */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:1rem;color:#888}
+.spinner{width:44px;height:44px;border:4px solid #e0e6ed;border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;text-align:center;gap:1rem}
+.not-found .nf-ico{font-size:4rem;color:#c8d0da}
+.not-found h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary)}
+.not-found p{color:#888;max-width:340px}
+.try-btn{margin-top:.75rem;padding:.55rem 1.4rem;background:var(--accent);color:#fff;border:none;border-radius:7px;
+  cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:500}
+
+/* DETAIL MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;justify-content:center;align-items:center;padding:1rem}
+.overlay.open{display:flex}
+.detail-box{background:#fff;border-radius:16px;max-width:660px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
+  position:relative;animation:slideUp .25s ease;box-shadow:0 16px 48px rgba(0,0,0,.28)}
+@keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.detail-head{background:linear-gradient(135deg,#2c3e50,#34495e);padding:1.75rem;display:flex;gap:1.4rem;color:#fff;align-items:flex-start;flex-shrink:0}
+.detail-cover{width:105px;height:155px;object-fit:cover;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.45);flex-shrink:0}
+.detail-cover-ph{width:105px;height:155px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:3rem;flex-shrink:0}
+.detail-info h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.3rem;line-height:1.3}
+.detail-meta span{display:inline-block;background:rgba(255,255,255,.15);font-size:.75rem;padding:.2rem .55rem;border-radius:20px;margin:.15rem .15rem .15rem 0}
+.det-author{color:rgba(255,255,255,.8);margin-bottom:.5rem;font-size:.92rem}
+.detail-body{padding:1.5rem;overflow-y:auto;flex:1}
+.dl-head{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--primary);margin-bottom:.85rem}
+.dl-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.dl-btn{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem 1rem;border:none;border-radius:7px;
+  cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;text-decoration:none;transition:opacity .2s,transform .1s}
+.dl-btn:hover{opacity:.85;transform:translateY(-1px)}
+.dl-read{background:var(--success);color:#fff}
+.dl-pdf{background:var(--danger);color:#fff}
+.dl-epub{background:var(--purple);color:#fff}
+.dl-html{background:var(--accent);color:#fff}
+.dl-txt{background:#7f8c8d;color:#fff}
+.dl-mobi{background:var(--gold);color:#fff}
+.note-box{background:#f0f4f8;border-radius:8px;padding:.7rem 1rem;font-size:.81rem;color:#555;display:flex;gap:.5rem;align-items:flex-start}
+.note-box i{color:var(--accent);margin-top:2px;flex-shrink:0}
+.det-close{position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s}
+.det-close:hover{background:rgba(255,255,255,.35)}
+
+/* LOGIN MODAL */
+.login-box{background:#fff;border-radius:14px;max-width:400px;width:100%;padding:2.25rem;position:relative;animation:slideUp .25s ease;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.login-box h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:1.25rem;color:var(--primary)}
+.login-box .x-btn{position:absolute;top:.85rem;right:.85rem;background:none;border:none;font-size:1.2rem;color:#aaa;cursor:pointer}
+.login-box .x-btn:hover{color:var(--danger)}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.87rem;font-weight:500;color:#444;margin-bottom:.3rem}
+.fg input{width:100%;padding:.55rem .8rem;border:1px solid #ddd;border-radius:7px;font-family:inherit;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.fg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(52,152,219,.14)}
+.ferr{color:var(--danger);font-size:.78rem;margin-top:.25rem;display:none}
+.sub-btn{width:100%;padding:.65rem;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:.95rem;font-family:inherit;font-weight:600;cursor:pointer;margin-top:.25rem;transition:background .2s}
+.sub-btn:hover{background:#2382c4}
+
+/* ================================================
+   REGISTRATION PAGE STYLES
+   ================================================ */
+#pgRegister{
+  min-height:calc(100vh - 100px);
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+}
+#pgRegister.active{display:flex}
+
+.reg-container{
+  display:flex;
+  width:100%;
+  max-width:960px;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 8px 40px rgba(0,0,0,.12);
+  overflow:hidden;
+  animation:slideUp .35s ease;
+  margin:1rem 0 2rem;
+}
+
+/* LEFT PANEL */
+.reg-left{
+  width:340px;
+  flex-shrink:0;
+  background:linear-gradient(160deg,#2c3e50 0%,#3d5a7a 60%,#2980b9 100%);
+  color:#fff;
+  padding:2.5rem 2rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.reg-left-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:.3rem}
+.reg-left-tagline{font-size:.83rem;opacity:.75;margin-bottom:2.5rem}
+.reg-perks{list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem}
+.reg-perks li{display:flex;align-items:flex-start;gap:.75rem;font-size:.88rem;line-height:1.45;opacity:.92}
+.reg-perks li .perk-ico{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.reg-perks li strong{display:block;font-size:.9rem;opacity:1}
+.reg-left-foot{font-size:.78rem;opacity:.55}
+
+/* STEP INDICATOR */
+.step-indicator{display:flex;align-items:center;gap:.35rem;margin-bottom:2rem}
+.step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s}
+.step-dot.active{background:#fff;width:28px;border-radius:5px}
+.step-dot.done{background:var(--success)}
+.step-label{font-size:.75rem;opacity:.65;margin-left:.25rem}
+
+/* RIGHT PANEL */
+.reg-right{flex:1;padding:2.5rem;overflow-y:auto;max-height:85vh}
+.reg-right h2{font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--primary);margin-bottom:.3rem}
+.reg-right .reg-sub{color:#888;font-size:.87rem;margin-bottom:1.75rem}
+
+/* FORM ELEMENTS */
+.reg-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.reg-fg{margin-bottom:1.1rem;position:relative}
+.reg-fg label{display:block;font-size:.84rem;font-weight:500;color:#444;margin-bottom:.35rem}
+.reg-fg input,.reg-fg select,.reg-fg textarea{
+  width:100%;padding:.58rem .85rem;border:1.5px solid #e0e5ec;border-radius:8px;
+  font-family:inherit;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;
+  background:#fafbfc;color:#333
+}
+.reg-fg input:focus,.reg-fg select:focus,.reg-fg textarea:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px rgba(52,152,219,.12);background:#fff
+}
+.reg-fg input.valid{border-color:var(--success)}
+.reg-fg input.invalid{border-color:var(--danger)}
+.reg-fg .fi{position:absolute;right:.8rem;top:2.35rem;font-size:.9rem;pointer-events:none}
+.reg-fg .fi.ok{color:var(--success)}.reg-fg .fi.ng{color:var(--danger)}
+.reg-ferr{color:var(--danger);font-size:.77rem;margin-top:.28rem;display:none;animation:fadeUp .2s ease}
+.reg-hint{color:#9aa3ae;font-size:.76rem;margin-top:.28rem}
+
+/* PASSWORD STRENGTH */
+.pwd-strength-wrap{margin-top:.4rem}
+.pwd-bars{display:flex;gap:3px;height:4px;border-radius:2px;overflow:hidden}
+.pwd-bar{flex:1;background:#e5e9ef;border-radius:2px;transition:background .3s}
+.pwd-bar.weak{background:var(--danger)}
+.pwd-bar.fair{background:var(--gold)}
+.pwd-bar.good{background:#27ae60}
+.pwd-label{font-size:.74rem;color:#9aa;margin-top:.28rem}
+
+/* GENRE CHECKBOXES */
+.genre-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.35rem}
+.genre-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.32rem .75rem;border:1.5px solid #dde1e7;
+  border-radius:20px;font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;background:#fff;user-select:none}
+.genre-chip:hover{border-color:var(--accent);color:var(--accent)}
+.genre-chip.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* AVATAR PICKER */
+.avatar-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.4rem}
+.av-opt{width:52px;height:52px;border-radius:50%;border:2.5px solid #e0e5ec;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:all .2s;background:#f5f7f9}
+.av-opt:hover{border-color:var(--accent);transform:scale(1.08)}
+.av-opt.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(52,152,219,.2)}
+
+/* STEP NAVIGATION */
+.reg-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #eef0f3}
+.btn-prev{padding:.55rem 1.2rem;background:none;border:1.5px solid #dde1e7;border-radius:8px;
+  font-family:inherit;font-size:.88rem;font-weight:500;color:#666;cursor:pointer;transition:all .2s}
+.btn-prev:hover{border-color:var(--accent);color:var(--accent)}
+.btn-next,.btn-submit{padding:.6rem 1.6rem;background:var(--accent);color:#fff;border:none;border-radius:8px;
+  font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.45rem;transition:background .2s,transform .1s}
+.btn-next:hover,.btn-submit:hover{background:#2382c4;transform:translateY(-1px)}
+.btn-submit{background:var(--success)}
+.btn-submit:hover{background:#27ae60}
+
+/* STEP LABELS */
+.step-titles{display:flex;gap:0;margin-bottom:1.75rem}
+.step-title-item{flex:1;text-align:center;font-size:.75rem;font-weight:500;color:#bbb;padding-bottom:.5rem;
+  border-bottom:2px solid #eee;transition:all .3s;cursor:default}
+.step-title-item.active{color:var(--accent);border-color:var(--accent)}
+.step-title-item.done{color:var(--success);border-color:var(--success)}
+
+/* SUCCESS SCREEN */
+.reg-success{text-align:center;padding:2rem 1rem;animation:fadeUp .4s ease}
+.reg-success .success-ico{font-size:4rem;margin-bottom:1rem;display:block}
+.reg-success h2{font-family:'Playfair Display',serif;font-size:1.85rem;color:var(--primary);margin-bottom:.5rem}
+.reg-success p{color:#777;max-width:340px;margin:0 auto 1.5rem;line-height:1.6}
+.reg-success .profile-preview{
+  background:linear-gradient(135deg,#f0f4f8,#e8edf3);
+  border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:1rem;text-align:left
+}
+.reg-success .profile-preview .big-av{font-size:2.5rem;width:60px;height:60px;border-radius:50%;background:#fff;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.1);flex-shrink:0}
+.reg-success .profile-preview h3{font-size:1.05rem;color:var(--primary);margin-bottom:.2rem}
+.reg-success .profile-preview p{color:#888;font-size:.82rem;margin:0}
+.reg-success .genre-chips-preview{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem}
+.reg-success .genre-chips-preview span{background:var(--accent);color:#fff;font-size:.72rem;padding:.18rem .55rem;border-radius:12px}
+.go-home-btn{padding:.7rem 2rem;background:var(--accent);color:#fff;border:none;border-radius:8px;
+  font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s}
+.go-home-btn:hover{background:#2382c4}
+.login-link-row{margin-top:1.25rem;text-align:center;font-size:.85rem;color:#888}
+.login-link-row a{color:var(--accent);font-weight:500;cursor:pointer;text-decoration:none}
+.login-link-row a:hover{text-decoration:underline}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{flex-direction:column;padding:.75rem}
+  .search-wrap{max-width:100%;width:100%}
+  .banner{height:210px}
+  .banner-overlay{padding:1.25rem 1.5rem}
+  .banner-overlay h1{font-size:1.4rem}
+  .books-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:1rem}
+  .book-row .book-card{min-width:155px}
+  .detail-head{flex-direction:column;align-items:center;text-align:center}
+  .stats-bar{flex-direction:column}
+  .reg-container{flex-direction:column}
+  .reg-left{width:100%;padding:1.5rem}
+  .reg-row{grid-template-columns:1fr}
+  .reg-right{max-height:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+<nav>
+  <div class="logo" onclick="goHome()">📚Library Management System</div>
+  <ul class="menu">
+    <li><a href="#" id="navHome" class="active" onclick="goHome();return false">Home</a></li>
+    <li><a href="#" id="navBrowse" onclick="showBrowse();return false">Browse All</a></li>
+    <li><a href="#" id="navFav" onclick="showFavPage();return false">My Books</a></li>
+  </ul>
+  <div class="search-wrap">
+    <select id="searchCat">
+      <option>All</option><option>Title</option><option>Author</option><option>Genre</option>
+    </select>
+    <input type="text" id="searchQ" placeholder="Search 70,000+ free books…">
+    <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+  </div>
+  <div class="auth-btns">
+    <span id="wlcUser"></span>
+    <button class="btn-login" id="btnLogin" onclick="openLogin()">Login</button>
+    <button class="btn-signup" id="btnSignup" onclick="openRegister()">Sign Up</button>
+    <button class="btn-logout" id="btnLogout" style="display:none" onclick="doLogout()">Logout</button>
+  </div>
+</nav>
+</header>
+
+<main>
+
+<!-- HOME PAGE -->
+<div class="page active" id="pgHome">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&auto=format&fit=crop&q=80" alt="Library">
+    <div class="banner-overlay">
+      <h1>Your Free Digital Library</h1>
+      <p>Explore 70,000+ books — 100% free to read, download &amp; keep forever from trusted public sources.</p>
+      <div class="badge-row">
+        <span class="badge badge-green"><i class="fas fa-unlock-alt"></i> Always Free</span>
+        <span class="badge badge-blue"><i class="fas fa-file-pdf"></i> PDF &amp; EPUB</span>
+        <span class="badge badge-purple"><i class="fas fa-globe"></i> Read Online</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-book"></i></div><div><div class="stat-val">70,000+</div><div class="stat-lbl">Free Books</div></div></div>
+    <div class="stat-card"><div class="stat-icon green"><i class="fas fa-file-pdf"></i></div><div><div class="stat-val">PDF / EPUB</div><div class="stat-lbl">Download Formats</div></div></div>
+    <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-database"></i></div><div><div class="stat-val">4 Sources</div><div class="stat-lbl">Gutenberg · Archive · Open Library · Standard Ebooks</div></div></div>
+    <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-globe"></i></div><div><div class="stat-val">100%</div><div class="stat-lbl">Legal &amp; Public Domain</div></div></div>
+  </div>
+
+  <div class="sec-head"><h2>📖 Classic Literature</h2><button class="see-all" onclick="filterGenre('Classic Literature')">See all →</button></div>
+  <div class="book-row" id="rowClassic"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🔬 Science &amp; Philosophy</h2><button class="see-all" onclick="filterGenre('Science & Philosophy')">See all →</button></div>
+  <div class="book-row" id="rowScience"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🗺️ Adventure &amp; Mystery</h2><button class="see-all" onclick="filterGenre('Adventure & Mystery')">See all →</button></div>
+  <div class="book-row" id="rowAdventure"></div>
+</div>
+
+<!-- BROWSE ALL PAGE -->
+<div class="page" id="pgBrowse">
+  <button class="back-lnk" onclick="goHome()"><i class="fas fa-arrow-left"></i> Back to Home</button>
+  <div class="sec-head"><h2 id="browseTitle">All Free Books</h2><span id="browseCount" style="color:#888;font-size:.88rem"></span></div>
+  <div class="tabs" id="genreTabs"></div>
+  <div class="books-grid" id="browseGrid"></div>
+</div>
+
+<!-- SEARCH RESULTS PAGE -->
+<div class="page" id="pgSearch">
+  <button class="back-lnk" onclick="goHome()"><i class="fas fa-arrow-left"></i> Back to Home</button>
+  <div class="results-bar">
+    <h1 id="resTitle">Results</h1>
+    <span id="resCount" class="res-count"></span>
+  </div>
+  <div class="free-bar">
+    <i class="fas fa-check-circle"></i>
+    <div><strong>All books are free!</strong> Results from our curated library + live search across:
+      <span style="margin-left:.3rem">📗 Project Gutenberg &nbsp;📘 Open Library &nbsp;📙 Internet Archive &nbsp;📕 Standard Ebooks</span>
+    </div>
+  </div>
+  <div id="resArea"></div>
+</div>
+
+<!-- FAVOURITES PAGE -->
+<div class="page" id="pgFav">
+  <button class="back-lnk" onclick="goHome()"><i class="fas fa-arrow-left"></i> Back to Home</button>
+  <div class="sec-head"><h2>⭐ My Saved Books</h2></div>
+  <div class="books-grid" id="favGrid"></div>
+</div>
+
+<!-- ================================================
+     REGISTRATION PAGE
+     ================================================ -->
+<div class="page" id="pgRegister">
+  <div class="reg-container">
+
+    <!-- LEFT PANEL -->
+    <div class="reg-left">
+      <div>
+        <div class="reg-left-logo">📚 LibraryMS</div>
+        <div class="reg-left-tagline">Your free digital reading companion</div>
+
+        <!-- Step dots -->
+        <div class="step-indicator" id="stepDots">
+          <div class="step-dot active" id="dot0"></div>
+          <div class="step-dot" id="dot1"></div>
+          <div class="step-dot" id="dot2"></div>
+          <span class="step-label" id="dotLabel">Step 1 of 3</span>
+        </div>
+
+        <ul class="reg-perks">
+          <li>
+            <div class="perk-ico"><i class="fas fa-bookmark"></i></div>
+            <div><strong>Save Favourites</strong>Build your personal reading list and never lose a book.</div>
+          </li>
+          <li>
+            <div class="perk-ico"><i class="fas fa-bell"></i></div>
+            <div><strong>New Arrivals</strong>Get notified when new books are added in your favourite genres.</div>
+          </li>
+          <li>
+            <div class="perk-ico"><i class="fas fa-history"></i></div>
+            <div><strong>Reading History</strong>Track what you've read and pick up where you left off.</div>
+          </li>
+          <li>
+            <div class="perk-ico"><i class="fas fa-unlock-alt"></i></div>
+            <div><strong>Always Free</strong>No subscription, no credit card. 70,000+ books at zero cost.</div>
+          </li>
+        </ul>
+      </div>
+      <div class="reg-left-foot">By creating an account you agree to our Terms of Service and Privacy Policy.</div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="reg-right" id="regRight">
+
+      <!-- Step Tabs -->
+      <div class="step-titles" id="stepTitles">
+        <div class="step-title-item active" id="stTitle0">Account</div>
+        <div class="step-title-item" id="stTitle1">Profile</div>
+        <div class="step-title-item" id="stTitle2">Preferences</div>
+      </div>
+
+      <!-- ── STEP 0: Account Details ── -->
+      <div id="step0">
+        <h2>Create Your Account</h2>
+        <p class="reg-sub">Fill in your credentials to get started — it's completely free.</p>
+
+        <div class="reg-row">
+          <div class="reg-fg">
+            <label>First Name <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="rFirstName" placeholder="Jane" oninput="liveValidate(this,'name')">
+            <i class="fas fi" id="fiFirstName"></i>
+            <div class="reg-ferr" id="errFirstName">Please enter your first name.</div>
+          </div>
+          <div class="reg-fg">
+            <label>Last Name <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="rLastName" placeholder="Austen" oninput="liveValidate(this,'name')">
+            <i class="fas fi" id="fiLastName"></i>
+            <div class="reg-ferr" id="errLastName">Please enter your last name.</div>
+          </div>
+        </div>
+
+        <div class="reg-fg">
+          <label>Email Address <span style="color:var(--danger)">*</span></label>
+          <input type="email" id="rEmail" placeholder="jane@example.com" oninput="liveValidate(this,'email')">
+          <i class="fas fi" id="fiEmail"></i>
+          <div class="reg-ferr" id="errEmail">Please enter a valid email address.</div>
+        </div>
+
+        <div class="reg-fg">
+          <label>Username <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="rUsername" placeholder="jane_reads" oninput="liveValidate(this,'username')">
+          <i class="fas fi" id="fiUsername"></i>
+          <div class="reg-ferr" id="errUsername">3–20 chars, letters, numbers, and underscores only.</div>
+          <div class="reg-hint">This will be displayed on your public profile.</div>
+        </div>
+
+        <div class="reg-fg">
+          <label>Password <span style="color:var(--danger)">*</span></label>
+          <input type="password" id="rPassword" placeholder="Create a strong password" oninput="checkPwdStrength(); liveValidate(this,'pwd')">
+          <i class="fas fi" id="fiPassword"></i>
+          <div class="reg-ferr" id="errPassword">Password must be at least 8 characters.</div>
+          <div class="pwd-strength-wrap" id="pwdStrengthWrap" style="display:none">
+            <div class="pwd-bars">
+              <div class="pwd-bar" id="pb0"></div>
+              <div class="pwd-bar" id="pb1"></div>
+              <div class="pwd-bar" id="pb2"></div>
+              <div class="pwd-bar" id="pb3"></div>
+            </div>
+            <div class="pwd-label" id="pwdLabel">Strength: —</div>
+          </div>
+        </div>
+
+        <div class="reg-fg">
+          <label>Confirm Password <span style="color:var(--danger)">*</span></label>
+          <input type="password" id="rConfirmPwd" placeholder="Repeat your password" oninput="liveValidate(this,'confirm')">
+          <i class="fas fi" id="fiConfirmPwd"></i>
+          <div class="reg-ferr" id="errConfirmPwd">Passwords do not match.</div>
+        </div>
+
+        <div class="reg-nav">
+          <div style="font-size:.82rem;color:#aaa">Already have an account? <a href="#" onclick="closeRegisterOpenLogin()" style="color:var(--accent)">Login</a></div>
+          <button class="btn-next" onclick="goStep(1)">Continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- ── STEP 1: Profile ── -->
+      <div id="step1" style="display:none">
+        <h2>Tell Us About Yourself</h2>
+        <p class="reg-sub">Help us personalise your library experience.</p>
+
+        <div class="reg-fg">
+          <label>Choose Your Avatar</label>
+          <div class="avatar-row" id="avatarRow">
+            <div class="av-opt selected" data-av="📚" onclick="selectAvatar(this)">📚</div>
+            <div class="av-opt" data-av="🦉" onclick="selectAvatar(this)">🦉</div>
+            <div class="av-opt" data-av="🐱" onclick="selectAvatar(this)">🐱</div>
+            <div class="av-opt" data-av="🌿" onclick="selectAvatar(this)">🌿</div>
+            <div class="av-opt" data-av="🔭" onclick="selectAvatar(this)">🔭</div>
+            <div class="av-opt" data-av="🎭" onclick="selectAvatar(this)">🎭</div>
+            <div class="av-opt" data-av="🌙" onclick="selectAvatar(this)">🌙</div>
+            <div class="av-opt" data-av="🏔️" onclick="selectAvatar(this)">🏔️</div>
+          </div>
+        </div>
+
+        <div class="reg-row">
+          <div class="reg-fg">
+            <label>Date of Birth</label>
+            <input type="date" id="rDob" max="">
+          </div>
+          <div class="reg-fg">
+            <label>Country</label>
+            <select id="rCountry">
+              <option value="">— Select country —</option>
+              <option>United States</option><option>United Kingdom</option><option>Canada</option>
+              <option>Australia</option><option>India</option><option>Germany</option>
+              <option>France</option><option>Brazil</option><option>Japan</option>
+              <option>South Africa</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="reg-fg">
+          <label>Reading Goal <span style="color:#aaa;font-weight:400">(books per year)</span></label>
+          <select id="rGoal">
+            <option value="">— Select a goal —</option>
+            <option value="6">Casual — 6 books / year</option>
+            <option value="12">Regular — 12 books / year</option>
+            <option value="24">Avid — 24 books / year</option>
+            <option value="52">Voracious — 52 books / year</option>
+          </select>
+        </div>
+
+        <div class="reg-fg">
+          <label>Short Bio <span style="color:#aaa;font-weight:400">(optional)</span></label>
+          <textarea id="rBio" rows="3" placeholder="Tell other readers a little about yourself…"
+            style="resize:vertical;font-family:inherit;font-size:.9rem;padding:.58rem .85rem;border:1.5px solid #e0e5ec;border-radius:8px;width:100%;outline:none;background:#fafbfc;transition:border-color .2s"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='#e0e5ec'"></textarea>
+          <div class="reg-hint">Max 200 characters.</div>
+        </div>
+
+        <div class="reg-nav">
+          <button class="btn-prev" onclick="goStep(0)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-next" onclick="goStep(2)">Continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Preferences ── -->
+      <div id="step2" style="display:none">
+        <h2>Your Reading Preferences</h2>
+        <p class="reg-sub">Pick genres you love — we'll personalise your home feed.</p>
+
+        <div class="reg-fg">
+          <label>Favourite Genres <span style="color:var(--danger)">*</span></label>
+          <div class="genre-grid" id="genreChips">
+            <!-- Chips injected by JS -->
+          </div>
+          <div class="reg-ferr" id="errGenres">Please select at least one genre.</div>
+        </div>
+
+        <div class="reg-fg" style="margin-top:.5rem">
+          <label>Preferred Reading Format</label>
+          <select id="rFormat">
+            <option value="">— No preference —</option>
+            <option value="online">Read Online</option>
+            <option value="pdf">PDF Download</option>
+            <option value="epub">EPUB / e-Reader</option>
+          </select>
+        </div>
+
+        <div class="reg-fg">
+          <label>Notification Preferences</label>
+          <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.3rem">
+            <label style="display:flex;align-items:center;gap:.6rem;font-size:.87rem;font-weight:400;cursor:pointer">
+              <input type="checkbox" id="notifNew" style="width:auto;accent-color:var(--accent)"> New book additions in my genres
+            </label>
+            <label style="display:flex;align-items:center;gap:.6rem;font-size:.87rem;font-weight:400;cursor:pointer">
+              <input type="checkbox" id="notifNews" style="width:auto;accent-color:var(--accent)"> Monthly library newsletter
+            </label>
+            <label style="display:flex;align-items:center;gap:.6rem;font-size:.87rem;font-weight:400;cursor:pointer">
+              <input type="checkbox" id="notifGoal" style="width:auto;accent-color:var(--accent)"> Reading goal reminders
+            </label>
+          </div>
+        </div>
+
+        <div class="reg-fg">
+          <label style="display:flex;align-items:flex-start;gap:.6rem;font-weight:400;cursor:pointer">
+            <input type="checkbox" id="rTerms" style="width:auto;accent-color:var(--accent);margin-top:3px">
+            <span style="font-size:.86rem">I agree to the <a href="#" style="color:var(--accent)">Terms of Service</a> and <a href="#" style="color:var(--accent)">Privacy Policy</a> <span style="color:var(--danger)">*</span></span>
+          </label>
+          <div class="reg-ferr" id="errTerms">You must agree to the terms to continue.</div>
+        </div>
+
+        <div class="reg-nav">
+          <button class="btn-prev" onclick="goStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-submit" onclick="submitReg()"><i class="fas fa-check"></i> Create Account</button>
+        </div>
+      </div>
+
+      <!-- ── SUCCESS ── -->
+      <div id="stepSuccess" style="display:none">
+        <div class="reg-success">
+          <span class="success-ico">🎉</span>
+          <h2>Welcome to the Library!</h2>
+          <p>Your account has been created. Start exploring 70,000+ free books right away.</p>
+
+          <div class="profile-preview" id="successProfile"></div>
+
+          <button class="go-home-btn" onclick="afterRegLogin()">
+            <i class="fas fa-home"></i> Go to My Library
+          </button>
+          <div class="login-link-row" style="margin-top:.75rem;font-size:.8rem;color:#bbb">Account saved in this browser session.</div>
+        </div>
+      </div>
+
+    </div><!-- /reg-right -->
+  </div><!-- /reg-container -->
+</div><!-- /pgRegister -->
+
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-box">
+    <button class="det-close" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+    <div id="detContent"></div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="loginOverlay" onclick="if(event.target===this)closeLogin()">
+  <div class="login-box">
+    <button class="x-btn" onclick="closeLogin()">&times;</button>
+    <h2>Welcome Back</h2>
+    <div class="fg"><label>Name</label><input type="text" id="inName" placeholder="Your name"><div class="ferr" id="errName">Please enter your name.</div></div>
+    <div class="fg"><label>Password</label><input type="password" id="inPwd" placeholder="Password"><div class="ferr" id="errPwd">Please enter a password.</div></div>
+    <button class="sub-btn" onclick="doLogin()">Login / Sign Up</button>
+    <div style="text-align:center;margin-top:1rem;font-size:.84rem;color:#888">
+      Don't have an account? <a href="#" onclick="closeLogin();openRegister()" style="color:var(--accent);font-weight:500">Sign up free</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =============================================
+   BOOKS DATABASE
+   ============================================= */
+const BOOKS = [
+  {id:1,title:"Pride and Prejudice",author:"Jane Austen",year:1813,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/9255566-L.jpg",read:"https://www.gutenberg.org/ebooks/1342",pdf:"https://www.gutenberg.org/files/1342/1342-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1342.epub.images",source:"gutenberg",desc:"A witty romantic novel following Elizabeth Bennet as she deals with issues of manners, upbringing, morality, education, and marriage."},
+  {id:2,title:"Sense and Sensibility",author:"Jane Austen",year:1811,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8739782-L.jpg",read:"https://www.gutenberg.org/ebooks/161",pdf:"https://www.gutenberg.org/files/161/161-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/161.epub.images",source:"gutenberg",desc:"The story of the Dashwood sisters, Elinor and Marianne, as they come of age and seek love."},
+  {id:3,title:"Emma",author:"Jane Austen",year:1815,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8237136-L.jpg",read:"https://www.gutenberg.org/ebooks/158",pdf:"https://www.gutenberg.org/files/158/158-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/158.epub.images",source:"gutenberg",desc:"A novel about youthful hubris and romantic misunderstandings in 18th-century England."},
+  {id:4,title:"1984",author:"George Orwell",year:1949,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/7222246-L.jpg",read:"https://archive.org/details/nineteeneightyfo0000orwe",pdf:"https://archive.org/download/nineteeneightyfo0000orwe/nineteeneightyfo0000orwe.pdf",epub:"https://www.gutenberg.org/ebooks/61/pg61.epub.images",source:"archive",desc:"Dystopian social science fiction following Winston Smith under the oppressive surveillance state of Big Brother."},
+  {id:5,title:"Animal Farm",author:"George Orwell",year:1945,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8739596-L.jpg",read:"https://www.gutenberg.org/ebooks/5765",pdf:"https://www.gutenberg.org/files/5765/5765-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/5765.epub.images",source:"gutenberg",desc:"An allegorical novella that reflects events leading up to the Russian Revolution and Stalinist era."},
+  {id:6,title:"The Great Gatsby",author:"F. Scott Fitzgerald",year:1925,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231856-L.jpg",read:"https://www.gutenberg.org/ebooks/64317",pdf:"https://www.gutenberg.org/files/64317/64317-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/64317.epub.images",source:"gutenberg",desc:"A novel of the Jazz Age exploring themes of decadence, idealism, and excess in 1920s America."},
+  {id:7,title:"Brave New World",author:"Aldous Huxley",year:1932,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232120-L.jpg",read:"https://archive.org/details/bravenewworld0000huxl_p4h1",pdf:"https://archive.org/download/bravenewworld0000huxl_p4h1/bravenewworld0000huxl_p4h1.pdf",epub:"https://archive.org/download/bravenewworld0000huxl_p4h1/bravenewworld0000huxl_p4h1.epub",source:"archive",desc:"A dystopian novel set in a futuristic World State of genetically modified citizens."},
+  {id:8,title:"Frankenstein",author:"Mary Shelley",year:1818,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8775398-L.jpg",read:"https://www.gutenberg.org/ebooks/84",pdf:"https://www.gutenberg.org/files/84/84-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/84.epub.images",source:"gutenberg",desc:"A Gothic novel about the young scientist Victor Frankenstein and the creature he creates."},
+  {id:9,title:"Dracula",author:"Bram Stoker",year:1897,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8810475-L.jpg",read:"https://www.gutenberg.org/ebooks/345",pdf:"https://www.gutenberg.org/files/345/345-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/345.epub.images",source:"gutenberg",desc:"The quintessential vampire novel introducing Count Dracula in a Gothic horror masterpiece."},
+  {id:10,title:"Wuthering Heights",author:"Emily Brontë",year:1847,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231905-L.jpg",read:"https://www.gutenberg.org/ebooks/768",pdf:"https://www.gutenberg.org/files/768/768-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/768.epub.images",source:"gutenberg",desc:"A dark, romantic novel about the passionate relationship between Heathcliff and Catherine."},
+  {id:11,title:"Jane Eyre",author:"Charlotte Brontë",year:1847,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231897-L.jpg",read:"https://www.gutenberg.org/ebooks/1260",pdf:"https://www.gutenberg.org/files/1260/1260-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1260.epub.images",source:"gutenberg",desc:"A bildungsroman following orphaned Jane Eyre's moral and spiritual development."},
+  {id:12,title:"Great Expectations",author:"Charles Dickens",year:1861,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8739936-L.jpg",read:"https://www.gutenberg.org/ebooks/1400",pdf:"https://www.gutenberg.org/files/1400/1400-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1400.epub.images",source:"gutenberg",desc:"The story of Pip, a young orphan who becomes a gentleman through mysterious beneficence."},
+  {id:13,title:"Oliver Twist",author:"Charles Dickens",year:1838,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8739908-L.jpg",read:"https://www.gutenberg.org/ebooks/730",pdf:"https://www.gutenberg.org/files/730/730-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/730.epub.images",source:"gutenberg",desc:"A social novel exposing the harsh conditions of 19th-century London's workhouses and criminal underworld."},
+  {id:14,title:"A Tale of Two Cities",author:"Charles Dickens",year:1859,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231868-L.jpg",read:"https://www.gutenberg.org/ebooks/98",pdf:"https://www.gutenberg.org/files/98/98-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/98.epub.images",source:"gutenberg",desc:"Set during the French Revolution, this is a tale of sacrifice, resurrection, and love."},
+  {id:15,title:"Don Quixote",author:"Miguel de Cervantes",year:1605,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231865-L.jpg",read:"https://www.gutenberg.org/ebooks/996",pdf:"https://www.gutenberg.org/files/996/996-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/996.epub.images",source:"gutenberg",desc:"Often called the first modern novel, following a nobleman who becomes a self-styled knight errant."},
+  {id:16,title:"The Odyssey",author:"Homer",year:-700,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232300-L.jpg",read:"https://www.gutenberg.org/ebooks/1727",pdf:"https://www.gutenberg.org/files/1727/1727-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1727.epub.images",source:"gutenberg",desc:"The epic journey of Odysseus returning home after the fall of Troy, filled with monsters and gods."},
+  {id:17,title:"The Iliad",author:"Homer",year:-750,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232310-L.jpg",read:"https://www.gutenberg.org/ebooks/6130",pdf:"https://www.gutenberg.org/files/6130/6130-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/6130.epub.images",source:"gutenberg",desc:"An ancient Greek epic poem about the last weeks of the Trojan War."},
+  {id:18,title:"Crime and Punishment",author:"Fyodor Dostoevsky",year:1866,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231992-L.jpg",read:"https://www.gutenberg.org/ebooks/2554",pdf:"https://www.gutenberg.org/files/2554/2554-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2554.epub.images",source:"gutenberg",desc:"A psychological drama about a student who commits a murder and the profound guilt that follows."},
+  {id:19,title:"War and Peace",author:"Leo Tolstoy",year:1869,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232008-L.jpg",read:"https://www.gutenberg.org/ebooks/2600",pdf:"https://www.gutenberg.org/files/2600/2600-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2600.epub.images",source:"gutenberg",desc:"An epic historical novel set during Napoleon's invasion of Russia, following five aristocratic families."},
+  {id:20,title:"Anna Karenina",author:"Leo Tolstoy",year:1878,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232030-L.jpg",read:"https://www.gutenberg.org/ebooks/1399",pdf:"https://www.gutenberg.org/files/1399/1399-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1399.epub.images",source:"gutenberg",desc:"A tragic tale of love, betrayal, and society in Imperial Russia."},
+  {id:21,title:"Les Misérables",author:"Victor Hugo",year:1862,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232140-L.jpg",read:"https://www.gutenberg.org/ebooks/135",pdf:"https://www.gutenberg.org/files/135/135-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/135.epub.images",source:"gutenberg",desc:"A sweeping tale of justice, redemption, and social inequity in 19th-century France."},
+  {id:22,title:"The Count of Monte Cristo",author:"Alexandre Dumas",year:1844,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232060-L.jpg",read:"https://www.gutenberg.org/ebooks/1184",pdf:"https://www.gutenberg.org/files/1184/1184-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1184.epub.images",source:"gutenberg",desc:"The tale of Edmond Dantès, wrongly imprisoned, who escapes and seeks elaborate revenge."},
+  {id:23,title:"Moby Dick",author:"Herman Melville",year:1851,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232080-L.jpg",read:"https://www.gutenberg.org/ebooks/2701",pdf:"https://www.gutenberg.org/files/2701/2701-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2701.epub.images",source:"gutenberg",desc:"Captain Ahab's obsessive quest to hunt the white sperm whale that maimed him."},
+  {id:24,title:"The Adventures of Tom Sawyer",author:"Mark Twain",year:1876,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232170-L.jpg",read:"https://www.gutenberg.org/ebooks/74",pdf:"https://www.gutenberg.org/files/74/74-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/74.epub.images",source:"gutenberg",desc:"A classic American novel following the mischievous Tom Sawyer growing up along the Mississippi River."},
+  {id:25,title:"Adventures of Huckleberry Finn",author:"Mark Twain",year:1884,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232180-L.jpg",read:"https://www.gutenberg.org/ebooks/76",pdf:"https://www.gutenberg.org/files/76/76-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/76.epub.images",source:"gutenberg",desc:"Huck Finn and Jim's journey down the Mississippi River in search of freedom."},
+  {id:30,title:"The Adventures of Sherlock Holmes",author:"Arthur Conan Doyle",year:1892,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739161-L.jpg",read:"https://www.gutenberg.org/ebooks/1661",pdf:"https://www.gutenberg.org/files/1661/1661-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1661.epub.images",source:"gutenberg",desc:"Twelve stories featuring the brilliant detective Sherlock Holmes and his companion Dr. Watson."},
+  {id:31,title:"The Hound of the Baskervilles",author:"Arthur Conan Doyle",year:1902,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739180-L.jpg",read:"https://www.gutenberg.org/ebooks/2852",pdf:"https://www.gutenberg.org/files/2852/2852-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2852.epub.images",source:"gutenberg",desc:"Holmes investigates the legend of a supernatural hound stalking the Baskerville family."},
+  {id:32,title:"Treasure Island",author:"Robert Louis Stevenson",year:1883,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739597-L.jpg",read:"https://www.gutenberg.org/ebooks/120",pdf:"https://www.gutenberg.org/files/120/120-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/120.epub.images",source:"gutenberg",desc:"Jim Hawkins embarks on a swashbuckling adventure to find buried pirate treasure."},
+  {id:33,title:"The Strange Case of Dr Jekyll and Mr Hyde",author:"R.L. Stevenson",year:1886,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739600-L.jpg",read:"https://www.gutenberg.org/ebooks/43",pdf:"https://www.gutenberg.org/files/43/43-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/43.epub.images",source:"gutenberg",desc:"A Gothic novella about a doctor whose experiments unleash a murderous alter ego."},
+  {id:34,title:"Around the World in Eighty Days",author:"Jules Verne",year:1872,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8231860-L.jpg",read:"https://www.gutenberg.org/ebooks/103",pdf:"https://www.gutenberg.org/files/103/103-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/103.epub.images",source:"gutenberg",desc:"Phileas Fogg bets he can circumnavigate the globe in 80 days in this classic adventure."},
+  {id:35,title:"Twenty Thousand Leagues Under the Sea",author:"Jules Verne",year:1870,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8231870-L.jpg",read:"https://www.gutenberg.org/ebooks/164",pdf:"https://www.gutenberg.org/files/164/164-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/164.epub.images",source:"gutenberg",desc:"Professor Aronnax's voyage aboard the submarine Nautilus with the enigmatic Captain Nemo."},
+  {id:36,title:"Journey to the Centre of the Earth",author:"Jules Verne",year:1864,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8231880-L.jpg",read:"https://www.gutenberg.org/ebooks/18857",pdf:"https://www.gutenberg.org/files/18857/18857-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/18857.epub.images",source:"gutenberg",desc:"Professor Lindenbrock leads an expedition through volcanic tubes to reach Earth's core."},
+  {id:37,title:"Robinson Crusoe",author:"Daniel Defoe",year:1719,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739601-L.jpg",read:"https://www.gutenberg.org/ebooks/521",pdf:"https://www.gutenberg.org/files/521/521-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/521.epub.images",source:"gutenberg",desc:"The classic survival story of a man shipwrecked on a remote tropical island for 28 years."},
+  {id:38,title:"The Call of the Wild",author:"Jack London",year:1903,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739604-L.jpg",read:"https://www.gutenberg.org/ebooks/215",pdf:"https://www.gutenberg.org/files/215/215-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/215.epub.images",source:"gutenberg",desc:"A sled dog named Buck discovers his primal instincts during the Klondike Gold Rush."},
+  {id:39,title:"The Invisible Man",author:"H.G. Wells",year:1897,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739608-L.jpg",read:"https://www.gutenberg.org/ebooks/5230",pdf:"https://www.gutenberg.org/files/5230/5230-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/5230.epub.images",source:"gutenberg",desc:"A scientist renders himself invisible and descends into violence and madness."},
+  {id:40,title:"The Time Machine",author:"H.G. Wells",year:1895,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739610-L.jpg",read:"https://www.gutenberg.org/ebooks/35",pdf:"https://www.gutenberg.org/files/35/35-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/35.epub.images",source:"gutenberg",desc:"An inventor travels far into the future to discover the disturbing fate of humanity."},
+  {id:41,title:"The War of the Worlds",author:"H.G. Wells",year:1898,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739612-L.jpg",read:"https://www.gutenberg.org/ebooks/36",pdf:"https://www.gutenberg.org/files/36/36-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/36.epub.images",source:"gutenberg",desc:"Martians invade England in this seminal science fiction story of alien encounter."},
+  {id:42,title:"Gulliver's Travels",author:"Jonathan Swift",year:1726,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739614-L.jpg",read:"https://www.gutenberg.org/ebooks/829",pdf:"https://www.gutenberg.org/files/829/829-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/829.epub.images",source:"gutenberg",desc:"A satirical travel tale through Lilliput, Brobdingnag, and other fantastical lands."},
+  {id:43,title:"The Picture of Dorian Gray",author:"Oscar Wilde",year:1890,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739616-L.jpg",read:"https://www.gutenberg.org/ebooks/174",pdf:"https://www.gutenberg.org/files/174/174-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/174.epub.images",source:"gutenberg",desc:"A portrait ages while its subject remains forever young but morally corrupt."},
+  {id:50,title:"On the Origin of Species",author:"Charles Darwin",year:1859,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232500-L.jpg",read:"https://www.gutenberg.org/ebooks/1228",pdf:"https://www.gutenberg.org/files/1228/1228-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1228.epub.images",source:"gutenberg",desc:"Darwin's seminal work introducing the scientific theory of evolution by natural selection."},
+  {id:51,title:"The Republic",author:"Plato",year:-380,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232520-L.jpg",read:"https://www.gutenberg.org/ebooks/1497",pdf:"https://www.gutenberg.org/files/1497/1497-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1497.epub.images",source:"gutenberg",desc:"Plato's Socratic dialogue on justice, the just city-state, and the just man."},
+  {id:52,title:"The Prince",author:"Niccolò Machiavelli",year:1532,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232540-L.jpg",read:"https://www.gutenberg.org/ebooks/1232",pdf:"https://www.gutenberg.org/files/1232/1232-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1232.epub.images",source:"gutenberg",desc:"A political treatise on how rulers acquire and maintain political power."},
+  {id:53,title:"Meditations",author:"Marcus Aurelius",year:180,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232560-L.jpg",read:"https://www.gutenberg.org/ebooks/2680",pdf:"https://www.gutenberg.org/files/2680/2680-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2680.epub.images",source:"gutenberg",desc:"A series of personal writings by the Roman Emperor on Stoic philosophy and self-improvement."},
+  {id:54,title:"The Art of War",author:"Sun Tzu",year:-500,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232580-L.jpg",read:"https://www.gutenberg.org/ebooks/132",pdf:"https://www.gutenberg.org/files/132/132-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/132.epub.images",source:"gutenberg",desc:"An ancient Chinese military treatise on strategy, still studied in business and martial arts."},
+  {id:55,title:"Relativity: The Special and General Theory",author:"Albert Einstein",year:1916,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232590-L.jpg",read:"https://www.gutenberg.org/ebooks/5001",pdf:"https://www.gutenberg.org/files/5001/5001-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/5001.epub.images",source:"gutenberg",desc:"Einstein's own accessible explanation of his groundbreaking theories of relativity."},
+  {id:56,title:"The Interpretation of Dreams",author:"Sigmund Freud",year:1900,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232600-L.jpg",read:"https://www.gutenberg.org/ebooks/38219",pdf:"https://www.gutenberg.org/files/38219/38219-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/38219.epub.images",source:"gutenberg",desc:"Freud's seminal work introducing the concept of the unconscious and dream analysis."},
+  {id:57,title:"Beyond Good and Evil",author:"Friedrich Nietzsche",year:1886,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232620-L.jpg",read:"https://www.gutenberg.org/ebooks/4363",pdf:"https://www.gutenberg.org/files/4363/4363-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/4363.epub.images",source:"gutenberg",desc:"Nietzsche's critique of traditional moral philosophy and the values of his era."},
+  {id:58,title:"Walden",author:"Henry David Thoreau",year:1854,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232640-L.jpg",read:"https://www.gutenberg.org/ebooks/205",pdf:"https://www.gutenberg.org/files/205/205-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/205.epub.images",source:"gutenberg",desc:"A reflection upon simple living in natural surroundings near Walden Pond, Massachusetts."},
+  {id:59,title:"The Wealth of Nations",author:"Adam Smith",year:1776,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232660-L.jpg",read:"https://www.gutenberg.org/ebooks/3300",pdf:"https://www.gutenberg.org/files/3300/3300-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/3300.epub.images",source:"gutenberg",desc:"The foundational text of modern economics, examining the nature and causes of wealth."},
+  {id:60,title:"The Communist Manifesto",author:"Karl Marx & Engels",year:1848,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232680-L.jpg",read:"https://www.gutenberg.org/ebooks/61",pdf:"https://www.gutenberg.org/files/61/61-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/61.epub.images",source:"gutenberg",desc:"A political pamphlet outlining the class struggle and the problems of capitalism."},
+  {id:61,title:"Common Sense",author:"Thomas Paine",year:1776,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232700-L.jpg",read:"https://www.gutenberg.org/ebooks/147",pdf:"https://www.gutenberg.org/files/147/147-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/147.epub.images",source:"gutenberg",desc:"A pamphlet that sparked the American Revolution by advocating independence from Britain."},
+  {id:70,title:"Alice's Adventures in Wonderland",author:"Lewis Carroll",year:1865,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739620-L.jpg",read:"https://www.gutenberg.org/ebooks/11",pdf:"https://www.gutenberg.org/files/11/11-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/11.epub.images",source:"gutenberg",desc:"Alice falls through a rabbit hole into a whimsical world of fantastical creatures."},
+  {id:71,title:"The Wonderful Wizard of Oz",author:"L. Frank Baum",year:1900,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739622-L.jpg",read:"https://www.gutenberg.org/ebooks/55",pdf:"https://www.gutenberg.org/files/55/55-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/55.epub.images",source:"gutenberg",desc:"Dorothy is swept to the magical Land of Oz and embarks on a quest to find home."},
+  {id:72,title:"Peter Pan",author:"J.M. Barrie",year:1904,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739624-L.jpg",read:"https://www.gutenberg.org/ebooks/16",pdf:"https://www.gutenberg.org/files/16/16-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/16.epub.images",source:"gutenberg",desc:"The boy who never grows up leads children to the magical Neverland."},
+  {id:73,title:"The Jungle Book",author:"Rudyard Kipling",year:1894,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739626-L.jpg",read:"https://www.gutenberg.org/ebooks/236",pdf:"https://www.gutenberg.org/files/236/236-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/236.epub.images",source:"gutenberg",desc:"Mowgli the boy raised by wolves in the Indian jungle with Baloo and Shere Khan."},
+  {id:74,title:"Grimm's Fairy Tales",author:"Brothers Grimm",year:1812,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739628-L.jpg",read:"https://www.gutenberg.org/ebooks/2591",pdf:"https://www.gutenberg.org/files/2591/2591-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2591.epub.images",source:"gutenberg",desc:"The classic collection of fairy tales including Cinderella, Snow White, and Rapunzel."},
+  {id:75,title:"Pinocchio",author:"Carlo Collodi",year:1883,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739630-L.jpg",read:"https://www.gutenberg.org/ebooks/500",pdf:"https://www.gutenberg.org/files/500/500-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/500.epub.images",source:"gutenberg",desc:"The tale of a wooden puppet who dreams of becoming a real boy."},
+  {id:76,title:"Anne of Green Gables",author:"L.M. Montgomery",year:1908,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739632-L.jpg",read:"https://www.gutenberg.org/ebooks/45",pdf:"https://www.gutenberg.org/files/45/45-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/45.epub.images",source:"gutenberg",desc:"A spirited orphan girl finds a home and adventures on Prince Edward Island."},
+  {id:80,title:"The Autobiography of Benjamin Franklin",author:"Benjamin Franklin",year:1791,genre:"Biography & History",cover:"https://covers.openlibrary.org/b/id/8740000-L.jpg",read:"https://www.gutenberg.org/ebooks/20203",pdf:"https://www.gutenberg.org/files/20203/20203-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/20203.epub.images",source:"gutenberg",desc:"Franklin's self-written account of his rise from poverty to become one of America's founders."},
+  {id:81,title:"Narrative of the Life of Frederick Douglass",author:"Frederick Douglass",year:1845,genre:"Biography & History",cover:"https://covers.openlibrary.org/b/id/8740010-L.jpg",read:"https://www.gutenberg.org/ebooks/23",pdf:"https://www.gutenberg.org/files/23/23-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/23.epub.images",source:"gutenberg",desc:"The powerful memoir of a formerly enslaved man who became a leading abolitionist."},
+  {id:82,title:"Up from Slavery",author:"Booker T. Washington",year:1901,genre:"Biography & History",cover:"https://covers.openlibrary.org/b/id/8740020-L.jpg",read:"https://www.gutenberg.org/ebooks/2376",pdf:"https://www.gutenberg.org/files/2376/2376-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/2376.epub.images",source:"gutenberg",desc:"Washington's autobiography chronicling his journey from slavery to founding Tuskegee Institute."},
+  {id:83,title:"The Life of Abraham Lincoln",author:"Henry Ketcham",year:1901,genre:"Biography & History",cover:"https://covers.openlibrary.org/b/id/8740030-L.jpg",read:"https://www.gutenberg.org/ebooks/6973",pdf:"https://www.gutenberg.org/files/6973/6973-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/6973.epub.images",source:"gutenberg",desc:"A biography of America's 16th president from his birth in a log cabin to his assassination."},
+  {id:84,title:"Twelve Years a Slave",author:"Solomon Northup",year:1853,genre:"Biography & History",cover:"https://covers.openlibrary.org/b/id/8740040-L.jpg",read:"https://www.gutenberg.org/ebooks/45631",pdf:"https://www.gutenberg.org/files/45631/45631-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/45631.epub.images",source:"gutenberg",desc:"Solomon Northup's memoir of being kidnapped and sold into slavery for twelve years."},
+  {id:90,title:"The Complete Works of Shakespeare",author:"William Shakespeare",year:1623,genre:"Poetry & Drama",cover:"https://covers.openlibrary.org/b/id/8232900-L.jpg",read:"https://www.gutenberg.org/ebooks/100",pdf:"https://www.gutenberg.org/files/100/100-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/100.epub.images",source:"gutenberg",desc:"The complete collection of Shakespeare's plays, sonnets, and poems — timeless masterpieces."},
+  {id:91,title:"The Divine Comedy",author:"Dante Alighieri",year:1320,genre:"Poetry & Drama",cover:"https://covers.openlibrary.org/b/id/8232920-L.jpg",read:"https://www.gutenberg.org/ebooks/8800",pdf:"https://www.gutenberg.org/files/8800/8800-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/8800.epub.images",source:"gutenberg",desc:"Dante's allegorical journey through Hell, Purgatory, and Paradise."},
+  {id:92,title:"Leaves of Grass",author:"Walt Whitman",year:1855,genre:"Poetry & Drama",cover:"https://covers.openlibrary.org/b/id/8232940-L.jpg",read:"https://www.gutenberg.org/ebooks/1322",pdf:"https://www.gutenberg.org/files/1322/1322-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/1322.epub.images",source:"gutenberg",desc:"Whitman's expansive poetry collection celebrating the American experience and democratic spirit."},
+  {id:93,title:"The Raven and Other Poems",author:"Edgar Allan Poe",year:1845,genre:"Poetry & Drama",cover:"https://covers.openlibrary.org/b/id/8232960-L.jpg",read:"https://www.gutenberg.org/ebooks/14082",pdf:"https://www.gutenberg.org/files/14082/14082-pdf.pdf",epub:"https://www.gutenberg.org/ebooks/14082.epub.images",source:"gutenberg",desc:"Poe's haunting poetry including The Raven, Annabel Lee, and other Gothic masterworks."},
+  {id:100,title:"How to Win Friends and Influence People",author:"Dale Carnegie",year:1936,genre:"Self-Help & Business",cover:"https://covers.openlibrary.org/b/id/8233100-L.jpg",read:"https://archive.org/details/howtowinfriendsandfluencepeople00carne",pdf:"https://archive.org/download/howtowinfriendsandfluencepeople00carne/howtowinfriendsandfluencepeople00carne.pdf",epub:"https://archive.org/download/howtowinfriendsandfluencepeople00carne/howtowinfriendsandfluencepeople00carne.epub",source:"archive",desc:"A self-help book on interpersonal skills that has sold over 30 million copies worldwide."},
+  {id:101,title:"Think and Grow Rich",author:"Napoleon Hill",year:1937,genre:"Self-Help & Business",cover:"https://covers.openlibrary.org/b/id/8233110-L.jpg",read:"https://archive.org/details/thinkandgrowrich00hill",pdf:"https://archive.org/download/thinkandgrowrich00hill/thinkandgrowrich00hill.pdf",epub:"https://archive.org/download/thinkandgrowrich00hill/thinkandgrowrich00hill.epub",source:"archive",desc:"Hill's personal development classic based on studying over 500 successful people."},
+  {id:102,title:"The Richest Man in Babylon",author:"George S. Clason",year:1926,genre:"Self-Help & Business",cover:"https://covers.openlibrary.org/b/id/8233120-L.jpg",read:"https://archive.org/details/richestmaninbaby00clas",pdf:"https://archive.org/download/richestmaninbaby00clas/richestmaninbaby00clas.pdf",epub:"https://archive.org/download/richestmaninbaby00clas/richestmaninbaby00clas.epub",source:"archive",desc:"Financial wisdom presented through parables set in ancient Babylon."},
+];
+
+/* =============================================
+   GENRES & STATE
+   ============================================= */
+const GENRES = ["All","Classic Literature","Adventure & Mystery","Science & Philosophy","Children & Fantasy","Biography & History","Poetry & Drama","Self-Help & Business"];
+let currentGenre = "All";
+let favIds = JSON.parse(localStorage.getItem('favIds')||'[]');
+
+function filtered(genre){
+  if(!genre||genre==="All") return BOOKS;
+  return BOOKS.filter(b=>b.genre===genre);
+}
+
+/* =============================================
+   RENDER CARD
+   ============================================= */
+function srcInfo(s){
+  if(s==="gutenberg") return {cls:"dot-gut",label:"Project Gutenberg"};
+  if(s==="archive")   return {cls:"dot-ia", label:"Internet Archive"};
+  if(s==="std")       return {cls:"dot-std",label:"Standard Ebooks"};
+  return {cls:"dot-ol",label:"Open Library"};
+}
+
+function makeCard(book, delay=0){
+  const s = srcInfo(book.source);
+  const hasPdf = !!book.pdf;
+  const hasEpub = !!book.epub;
+  const ribbonLabel = book.source==="gutenberg"?"GUTENBERG":book.source==="archive"?"ARCHIVE":"FREE";
+  const ribbonCls   = book.source==="gutenberg"?"r-gut":book.source==="archive"?"r-free":"r-pdf";
+
+  return `<div class="book-card" style="animation-delay:${delay}ms" onclick="openDetail(${book.id})">
+    <span class="ribbon ${ribbonCls}">${ribbonLabel}</span>
+    ${book.cover
+      ? `<img class="book-cover" src="${esc(book.cover)}" alt="${esc(book.title)}" onerror="this.outerHTML='<div class=\\'cover-ph\\'><i class=\\'fas fa-book\\'></i></div>'">`
+      : `<div class="cover-ph"><i class="fas fa-book"></i></div>`}
+    <div class="book-title">${esc(book.title)}</div>
+    <div class="book-author">${esc(book.author)}</div>
+    <div class="book-genre">${esc(book.genre)}</div>
+    <div class="src-pill"><span class="src-dot ${s.cls}"></span>${s.label}</div>
+    <div class="card-btns">
+      <a class="cb-read" href="${esc(book.read)}" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-book-reader"></i>Read</a>
+      ${hasPdf?`<a class="cb-pdf" href="${esc(book.pdf)}" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-file-pdf"></i>PDF</a>`:''}
+      ${hasEpub?`<a class="cb-epub" href="${esc(book.epub)}" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-download"></i>EPUB</a>`:''}
+    </div>
+  </div>`;
+}
+
+/* =============================================
+   HOME
+   ============================================= */
+function renderHome(){
+  const classics   = BOOKS.filter(b=>b.genre==="Classic Literature").slice(0,10);
+  const science    = BOOKS.filter(b=>b.genre==="Science & Philosophy").slice(0,8);
+  const adventure  = BOOKS.filter(b=>b.genre==="Adventure & Mystery").slice(0,10);
+  document.getElementById('rowClassic').innerHTML   = classics.map((b,i)=>makeCard(b,i*40)).join('');
+  document.getElementById('rowScience').innerHTML   = science.map((b,i)=>makeCard(b,i*40)).join('');
+  document.getElementById('rowAdventure').innerHTML = adventure.map((b,i)=>makeCard(b,i*40)).join('');
+}
+
+/* =============================================
+   BROWSE
+   ============================================= */
+function renderGenreTabs(){
+  const tabs = document.getElementById('genreTabs');
+  tabs.innerHTML = GENRES.map(g=>{
+    const cnt = g==="All"?BOOKS.length:BOOKS.filter(b=>b.genre===g).length;
+    return `<button class="tab-btn${g===currentGenre?' active':''}" onclick="filterGenre('${g}')">${g}<span class="tab-count">${cnt}</span></button>`;
+  }).join('');
+}
+
+function filterGenre(genre){
+  currentGenre = genre;
+  showBrowse();
+}
+
+function showBrowse(){
+  setPage('pgBrowse');
+  setNavActive('navBrowse');
+  renderGenreTabs();
+  const books = filtered(currentGenre);
+  document.getElementById('browseTitle').textContent = currentGenre==="All"?"All Free Books":currentGenre;
+  document.getElementById('browseCount').textContent = `${books.length} books`;
+  document.getElementById('browseGrid').innerHTML = books.map((b,i)=>makeCard(b,Math.min(i*30,600))).join('');
+}
+
+/* =============================================
+   SEARCH
+   ============================================= */
+function doSearch(){
+  const q   = document.getElementById('searchQ').value.trim();
+  const cat = document.getElementById('searchCat').value;
+  if(!q){ document.getElementById('searchQ').focus(); return; }
+  setPage('pgSearch');
+  setNavActive(null);
+  document.getElementById('resTitle').textContent = `Results for "${q}"`;
+  document.getElementById('resCount').textContent = '';
+  document.getElementById('resArea').innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching…</p></div>';
+  runSearch(q, cat);
+}
+
+document.getElementById('searchQ').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+
+async function runSearch(q, cat){
+  const lq = q.toLowerCase();
+  let local = BOOKS.filter(b=>{
+    if(cat==="Genre") return b.genre.toLowerCase().includes(lq);
+    if(cat==="Author") return b.author.toLowerCase().includes(lq);
+    if(cat==="Title") return b.title.toLowerCase().includes(lq);
+    return b.title.toLowerCase().includes(lq)||b.author.toLowerCase().includes(lq)||b.genre.toLowerCase().includes(lq);
+  });
+
+  let apiBooks = [];
+  try {
+    const enc = encodeURIComponent(q);
+    const r = await fetch(`https://gutendex.com/books/?search=${enc}&copyright=false&languages=en`);
+    const d = await r.json();
+    apiBooks = (d.results||[]).slice(0,20).map(g=>{
+      const fmts = g.formats||{};
+      return {
+        id: 'g'+g.id,
+        title: g.title,
+        author: g.authors.map(a=>a.name.split(', ').reverse().join(' ')).join(', ')||'Unknown',
+        year: g.authors[0]?.birth_year||'',
+        genre: (g.bookshelves[0]||g.subjects[0]||'Classic Literature').replace('Browsing: ','').split(' -- ')[0].trim().substring(0,30),
+        cover: fmts['image/jpeg']||null,
+        read: `https://www.gutenberg.org/ebooks/${g.id}`,
+        pdf: fmts['application/pdf']||null,
+        epub: fmts['application/epub+zip']||null,
+        source:'gutenberg',
+        desc: `A classic work from Project Gutenberg.`
+      };
+    });
+    const localTitles = new Set(local.map(b=>b.title.toLowerCase()));
+    apiBooks = apiBooks.filter(b=>!localTitles.has(b.title.toLowerCase()));
+  } catch(e){}
+
+  const all = [...local, ...apiBooks];
+  document.getElementById('resCount').textContent = `${all.length} book${all.length!==1?'s':''} found`;
+
+  if(!all.length){
+    document.getElementById('resArea').innerHTML = `<div class="not-found">
+      <div class="nf-ico"><i class="fas fa-book-open"></i></div>
+      <h2>No books found</h2>
+      <p>Try a different search term or <a href="https://www.gutenberg.org/ebooks/search/?query=${encodeURIComponent(q)}" target="_blank" style="color:var(--accent)">browse Project Gutenberg directly</a>.</p>
+      <button class="try-btn" onclick="goHome()">← Back to Home</button>
+    </div>`;
+    return;
+  }
+  document.getElementById('resArea').innerHTML = `<div class="books-grid">${all.map((b,i)=>makeCard(b,Math.min(i*30,500))).join('')}</div>`;
+}
+
+/* =============================================
+   DETAIL MODAL
+   ============================================= */
+function openDetail(id){
+  const book = BOOKS.find(b=>b.id===id);
+  if(!book) return;
+  const s = srcInfo(book.source);
+  const coverHtml = book.cover
+    ? `<img class="detail-cover" src="${esc(book.cover)}" alt="${esc(book.title)}" onerror="this.outerHTML='<div class=\\'detail-cover-ph\\'><i class=\\'fas fa-book\\'></i></div>'">`
+    : `<div class="detail-cover-ph"><i class="fas fa-book"></i></div>`;
+  const meta = [
+    book.year ? `<span><i class="fas fa-calendar"></i> ${book.year>0?book.year:Math.abs(book.year)+' BCE'}</span>` : '',
+    `<span><i class="fas fa-tag"></i> ${book.genre}</span>`,
+    `<span><i class="fas fa-unlock-alt"></i> Free & Legal</span>`
+  ].join('');
+  const dlBtns = [
+    `<a class="dl-btn dl-read" href="${esc(book.read)}" target="_blank"><i class="fas fa-book-reader"></i> Read Online</a>`,
+    book.pdf  ? `<a class="dl-btn dl-pdf"  href="${esc(book.pdf)}"  target="_blank"><i class="fas fa-file-pdf"></i> Download PDF</a>` : '',
+    book.epub ? `<a class="dl-btn dl-epub" href="${esc(book.epub)}" target="_blank"><i class="fas fa-download"></i> Download EPUB</a>` : '',
+    book.source==='gutenberg' ? `<a class="dl-btn dl-html" href="https://www.gutenberg.org/ebooks/${book.read.split('/').pop()}" target="_blank"><i class="fas fa-globe"></i> Gutenberg Page</a>` : '',
+    book.source==='archive'   ? `<a class="dl-btn dl-mobi" href="${esc(book.read)}" target="_blank"><i class="fas fa-tablet-alt"></i> Archive Page</a>` : '',
+  ].join('');
+
+  document.getElementById('detContent').innerHTML = `
+    <div class="detail-head">
+      ${coverHtml}
+      <div class="detail-info">
+        <h2>${esc(book.title)}</h2>
+        <div class="det-author">by ${esc(book.author)}</div>
+        <div class="detail-meta">${meta}</div>
+        <div class="src-pill" style="margin-top:.6rem"><span class="src-dot ${s.cls}"></span>${s.label}</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <p style="color:#555;font-size:.9rem;line-height:1.7;margin-bottom:1.25rem">${esc(book.desc)}</p>
+      <div class="dl-head"><i class="fas fa-download"></i> Free Access Options</div>
+      <div class="dl-grid">${dlBtns}</div>
+      <div class="note-box"><i class="fas fa-info-circle"></i>
+        <span>This book is in the public domain. It is <strong>100% free and legal</strong> to read, download, and share from <strong>${s.label}</strong>.</span>
+      </div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){ document.getElementById('detailOverlay').classList.remove('open'); }
+
+/* =============================================
+   FAVOURITES
+   ============================================= */
+function showFavPage(){
+  setPage('pgFav');
+  setNavActive('navFav');
+  const favBooks = BOOKS.filter(b=>favIds.includes(b.id));
+  const grid = document.getElementById('favGrid');
+  if(!favBooks.length){
+    grid.innerHTML = `<div class="not-found" style="grid-column:1/-1">
+      <div class="nf-ico"><i class="fas fa-star"></i></div>
+      <h2>No saved books yet</h2>
+      <p>Browse the library and save books to see them here.</p>
+    </div>`;
+  } else {
+    grid.innerHTML = favBooks.map((b,i)=>makeCard(b,i*40)).join('');
+  }
+}
+
+/* =============================================
+   PAGE ROUTER
+   ============================================= */
+function setPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function setNavActive(id){
+  document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
+  if(id) document.getElementById(id)?.classList.add('active');
+}
+function goHome(){
+  setPage('pgHome');
+  setNavActive('navHome');
+  document.getElementById('searchQ').value='';
+}
+
+/* =============================================
+   AUTH
+   ============================================= */
+function updateAuth(){
+  const ok = localStorage.getItem('lms_login')==='1';
+  const name = localStorage.getItem('lms_name')||'User';
+  document.getElementById('wlcUser').textContent = ok ? `Welcome, ${name}` : '';
+  document.getElementById('btnLogin').style.display  = ok?'none':'';
+  document.getElementById('btnSignup').style.display = ok?'none':'';
+  document.getElementById('btnLogout').style.display = ok?'':'none';
+}
+function openLogin(){ document.getElementById('loginOverlay').classList.add('open'); document.getElementById('inName').focus(); }
+function closeLogin(){ document.getElementById('loginOverlay').classList.remove('open'); }
+function doLogin(){
+  const n=document.getElementById('inName').value.trim();
+  const p=document.getElementById('inPwd').value.trim();
+  document.getElementById('errName').style.display=n?'none':'block';
+  document.getElementById('errPwd').style.display=p?'none':'block';
+  if(!n||!p)return;
+  localStorage.setItem('lms_login','1');
+  localStorage.setItem('lms_name',n);
+  closeLogin(); updateAuth();
+}
+function doLogout(){ localStorage.removeItem('lms_login'); localStorage.removeItem('lms_name'); localStorage.removeItem('lms_user'); updateAuth(); goHome(); }
+document.getElementById('inName').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('inPwd').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeDetail(); closeLogin(); } });
+
+/* =============================================
+   REGISTRATION PAGE
+   ============================================= */
+let currentStep = 0;
+let selectedAvatar = '📚';
+let selectedGenres = [];
+
+function openRegister(){
+  currentStep = 0;
+  selectedGenres = [];
+  selectedAvatar = '📚';
+  renderGenreChips();
+  // Reset step dots state
+  updateStepUI(0);
+  // Reset form fields
+  ['rFirstName','rLastName','rEmail','rUsername','rPassword','rConfirmPwd'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.value=''; el.classList.remove('valid','invalid'); }
+  });
+  ['fiFirstName','fiLastName','fiEmail','fiUsername','fiPassword','fiConfirmPwd'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.className='fas fi';
+  });
+  document.getElementById('pwdStrengthWrap').style.display='none';
+  // Reset avatar
+  document.querySelectorAll('.av-opt').forEach(a=>a.classList.remove('selected'));
+  document.querySelector('.av-opt[data-av="📚"]').classList.add('selected');
+  // Show step 0
+  [0,1,2].forEach(i=>{ document.getElementById('step'+i).style.display = i===0?'block':'none'; });
+  document.getElementById('stepSuccess').style.display='none';
+  // DOB max today
+  document.getElementById('rDob').max = new Date().toISOString().split('T')[0];
+  setPage('pgRegister');
+  setNavActive(null);
+}
+
+function closeRegisterOpenLogin(){
+  goHome();
+  openLogin();
+}
+
+function renderGenreChips(){
+  const allGenres = ["Classic Literature","Adventure & Mystery","Science & Philosophy","Children & Fantasy","Biography & History","Poetry & Drama","Self-Help & Business"];
+  const icons = {"Classic Literature":"📖","Adventure & Mystery":"🗺️","Science & Philosophy":"🔬","Children & Fantasy":"✨","Biography & History":"🏛️","Poetry & Drama":"🎭","Self-Help & Business":"💼"};
+  document.getElementById('genreChips').innerHTML = allGenres.map(g=>
+    `<div class="genre-chip${selectedGenres.includes(g)?' selected':''}" onclick="toggleGenre(this,'${g}')">${icons[g]||''} ${g}</div>`
+  ).join('');
+}
+
+function toggleGenre(el, genre){
+  if(selectedGenres.includes(genre)){
+    selectedGenres = selectedGenres.filter(g=>g!==genre);
+    el.classList.remove('selected');
+  } else {
+    selectedGenres.push(genre);
+    el.classList.add('selected');
+  }
+}
+
+function selectAvatar(el){
+  document.querySelectorAll('.av-opt').forEach(a=>a.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAvatar = el.dataset.av;
+}
+
+function updateStepUI(step){
+  // Dots
+  for(let i=0;i<3;i++){
+    const dot = document.getElementById('dot'+i);
+    dot.classList.remove('active','done');
+    if(i < step) dot.classList.add('done');
+    else if(i === step) dot.classList.add('active');
+  }
+  document.getElementById('dotLabel').textContent = `Step ${step+1} of 3`;
+
+  // Step title tabs
+  for(let i=0;i<3;i++){
+    const t = document.getElementById('stTitle'+i);
+    t.classList.remove('active','done');
+    if(i < step) t.classList.add('done');
+    else if(i === step) t.classList.add('active');
+  }
+}
+
+function goStep(to){
+  if(to > currentStep){
+    // Validate current step before advancing
+    if(currentStep === 0 && !validateStep0()) return;
+    if(currentStep === 2 && !validateStep2()) return;
+  }
+  document.getElementById('step'+currentStep).style.display='none';
+  currentStep = to;
+  document.getElementById('step'+currentStep).style.display='block';
+  updateStepUI(currentStep);
+  document.getElementById('regRight').scrollTop = 0;
+}
+
+/* STEP 0 VALIDATION */
+function validateStep0(){
+  let ok = true;
+
+  const fn = document.getElementById('rFirstName').value.trim();
+  const ln = document.getElementById('rLastName').value.trim();
+  const em = document.getElementById('rEmail').value.trim();
+  const un = document.getElementById('rUsername').value.trim();
+  const pw = document.getElementById('rPassword').value;
+  const cp = document.getElementById('rConfirmPwd').value;
+
+  function setErr(id, fiId, show, msg=''){
+    const err = document.getElementById(id);
+    const fi  = document.getElementById(fiId);
+    const inp = err.previousElementSibling?.tagName === 'I' ? err.previousElementSibling.previousElementSibling : null;
+    err.style.display = show ? 'block' : 'none';
+    if(msg) err.textContent = msg;
+    if(fi){ fi.className = 'fas fi ' + (show ? 'fa-times-circle ng' : 'fa-check-circle ok'); }
+  }
+
+  if(!fn){ setErr('errFirstName','fiFirstName',true); ok=false; } else { setErr('errFirstName','fiFirstName',false); }
+  if(!ln){ setErr('errLastName','fiLastName',true); ok=false; } else { setErr('errLastName','fiLastName',false); }
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+  if(!emailOk){ setErr('errEmail','fiEmail',true,'Please enter a valid email address.'); ok=false; } else { setErr('errEmail','fiEmail',false); }
+
+  const unOk = /^[a-zA-Z0-9_]{3,20}$/.test(un);
+  if(!unOk){ setErr('errUsername','fiUsername',true,'3–20 chars, letters, numbers, underscores only.'); ok=false; } else { setErr('errUsername','fiUsername',false); }
+
+  if(pw.length < 8){ setErr('errPassword','fiPassword',true,'Password must be at least 8 characters.'); ok=false; } else { setErr('errPassword','fiPassword',false); }
+
+  if(pw !== cp || !cp){ setErr('errConfirmPwd','fiConfirmPwd',true,'Passwords do not match.'); ok=false; } else { setErr('errConfirmPwd','fiConfirmPwd',false); }
+
+  return ok;
+}
+
+/* STEP 2 VALIDATION */
+function validateStep2(){
+  let ok = true;
+  if(selectedGenres.length === 0){
+    document.getElementById('errGenres').style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('errGenres').style.display = 'none';
+  }
+  if(!document.getElementById('rTerms').checked){
+    document.getElementById('errTerms').style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('errTerms').style.display = 'none';
+  }
+  return ok;
+}
+
+/* LIVE VALIDATION */
+function liveValidate(input, type){
+  const fi = document.getElementById('fi'+input.id.replace('r','').charAt(0).toUpperCase()+input.id.slice(2));
+  if(!fi) return;
+  let valid = false;
+  if(type==='name') valid = input.value.trim().length > 0;
+  if(type==='email') valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+  if(type==='username') valid = /^[a-zA-Z0-9_]{3,20}$/.test(input.value.trim());
+  if(type==='pwd') valid = input.value.length >= 8;
+  if(type==='confirm') valid = input.value === document.getElementById('rPassword').value && input.value.length > 0;
+
+  input.classList.toggle('valid', valid);
+  input.classList.toggle('invalid', !valid && input.value.length > 0);
+  fi.className = 'fas fi ' + (valid ? 'fa-check-circle ok' : (input.value.length > 0 ? 'fa-times-circle ng' : ''));
+}
+
+/* PASSWORD STRENGTH */
+function checkPwdStrength(){
+  const pwd = document.getElementById('rPassword').value;
+  const wrap = document.getElementById('pwdStrengthWrap');
+  if(!pwd){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+
+  let score = 0;
+  if(pwd.length >= 8) score++;
+  if(pwd.length >= 12) score++;
+  if(/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+  if(/\d/.test(pwd)) score++;
+  if(/[^A-Za-z0-9]/.test(pwd)) score++;
+
+  const level = score <= 1 ? 'weak' : score <= 3 ? 'fair' : 'good';
+  const labels = {weak:'Weak',fair:'Fair',good:'Strong'};
+  const colors = {weak:'var(--danger)',fair:'var(--gold)',good:'#27ae60'};
+
+  for(let i=0;i<4;i++){
+    const bar = document.getElementById('pb'+i);
+    bar.className = 'pwd-bar';
+    if(i < Math.ceil(score * 4/5)) bar.classList.add(level);
+  }
+  document.getElementById('pwdLabel').textContent = `Strength: ${labels[level]}`;
+  document.getElementById('pwdLabel').style.color = colors[level];
+}
+
+/* SUBMIT */
+function submitReg(){
+  if(!validateStep2()) return;
+
+  const userData = {
+    firstName: document.getElementById('rFirstName').value.trim(),
+    lastName:  document.getElementById('rLastName').value.trim(),
+    email:     document.getElementById('rEmail').value.trim(),
+    username:  document.getElementById('rUsername').value.trim(),
+    avatar:    selectedAvatar,
+    dob:       document.getElementById('rDob').value,
+    country:   document.getElementById('rCountry').value,
+    goal:      document.getElementById('rGoal').value,
+    bio:       document.getElementById('rBio').value.trim(),
+    genres:    selectedGenres,
+    format:    document.getElementById('rFormat').value,
+    notifNew:  document.getElementById('notifNew').checked,
+    notifNews: document.getElementById('notifNews').checked,
+    notifGoal: document.getElementById('notifGoal').checked,
+    joined:    new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'})
+  };
+
+  localStorage.setItem('lms_user', JSON.stringify(userData));
+  localStorage.setItem('lms_login','1');
+  localStorage.setItem('lms_name', userData.firstName);
+
+  // Show success
+  [0,1,2].forEach(i=>document.getElementById('step'+i).style.display='none');
+  document.getElementById('stepSuccess').style.display='block';
+
+  // Render profile preview
+  const genreHtml = userData.genres.slice(0,4).map(g=>`<span>${g}</span>`).join('');
+  document.getElementById('successProfile').innerHTML = `
+    <div class="big-av">${userData.avatar}</div>
+    <div>
+      <h3>${esc(userData.firstName)} ${esc(userData.lastName)}</h3>
+      <p>@${esc(userData.username)} · ${esc(userData.country||'Reader')}</p>
+      <div class="genre-chips-preview">${genreHtml}</div>
+    </div>`;
+
+  // Update step dots to done state
+  for(let i=0;i<3;i++) document.getElementById('dot'+i).classList.replace('active','done');
+  document.getElementById('dotLabel').textContent = 'All done! ✓';
+  updateAuth();
+}
+
+function afterRegLogin(){
+  goHome();
+}
+
+/* =============================================
+   UTIL
+   ============================================= */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+/* =============================================
+   INIT
+   ============================================= */
+updateAuth();
+renderHome();
+</script>
+</body>
+</html>
