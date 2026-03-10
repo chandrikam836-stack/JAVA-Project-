@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Management System – Create Account</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2c3e50;--accent:#3498db;--success:#2ecc71;
+  --danger:#e74c3c;--gold:#f39c12;--purple:#8e44ad;
+  --bg:#f4f6f9;--card:#fff;--shadow:0 4px 16px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#333;min-height:100vh}
+
+/* NAV */
+header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+nav{display:flex;justify-content:space-between;align-items:center;padding:.85rem 2rem;max-width:1300px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--primary);cursor:pointer;white-space:nowrap;text-decoration:none}
+.menu{display:flex;list-style:none;gap:1.2rem}
+.menu a{text-decoration:none;color:#555;font-weight:500;font-size:.9rem;transition:color .2s}
+.menu a:hover,.menu a.active{color:var(--accent)}
+.search-wrap{display:flex;flex:1;max-width:420px}
+.search-wrap select{padding:.48rem .7rem;border:1px solid #ddd;border-right:none;border-radius:6px 0 0 6px;background:#f8f8f8;font-size:.85rem;cursor:pointer}
+.search-wrap input{flex:1;padding:.48rem .75rem;border:1px solid #ddd;font-size:.88rem;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap button{padding:.48rem .85rem;background:var(--accent);border:none;border-radius:0 6px 6px 0;color:#fff;cursor:pointer;transition:background .2s}
+.search-wrap button:hover{background:#2382c4}
+.auth-btns{display:flex;align-items:center;gap:.4rem}
+.auth-btns button{padding:.4rem .9rem;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:500;font-family:inherit;transition:opacity .2s}
+.btn-login{background:var(--accent);color:#fff}
+
+/* MAIN */
+main{max-width:1300px;margin:0 auto;padding:2rem;display:flex;align-items:flex-start;justify-content:center;min-height:calc(100vh - 64px)}
+
+/* REGISTRATION CONTAINER */
+.reg-container{
+  display:flex;width:100%;max-width:960px;background:#fff;
+  border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.12);
+  overflow:hidden;animation:slideUp .35s ease;margin:1rem 0 2rem;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* LEFT PANEL */
+.reg-left{
+  width:340px;flex-shrink:0;
+  background:linear-gradient(160deg,#2c3e50 0%,#3d5a7a 60%,#2980b9 100%);
+  color:#fff;padding:2.5rem 2rem;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.reg-left-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:.3rem}
+.reg-left-tagline{font-size:.83rem;opacity:.75;margin-bottom:2.5rem}
+.reg-perks{list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem}
+.reg-perks li{display:flex;align-items:flex-start;gap:.75rem;font-size:.88rem;line-height:1.45;opacity:.92}
+.reg-perks li .perk-ico{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.reg-perks li strong{display:block;font-size:.9rem;opacity:1}
+.reg-left-foot{font-size:.78rem;opacity:.55}
+
+/* RIGHT PANEL */
+.reg-right{flex:1;padding:2.5rem;overflow-y:auto;max-height:85vh}
+.reg-right h2{font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--primary);margin-bottom:.3rem}
+.reg-right .reg-sub{color:#888;font-size:.87rem;margin-bottom:1.75rem}
+
+/* FORM ELEMENTS */
+.reg-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.reg-fg{margin-bottom:1.1rem;position:relative}
+.reg-fg label{display:block;font-size:.84rem;font-weight:500;color:#444;margin-bottom:.35rem}
+.reg-fg input,.reg-fg select,.reg-fg textarea{
+  width:100%;padding:.58rem .85rem;border:1.5px solid #e0e5ec;border-radius:8px;
+  font-family:inherit;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;
+  background:#fafbfc;color:#333
+}
+.reg-fg input:focus,.reg-fg select:focus,.reg-fg textarea:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px rgba(52,152,219,.12);background:#fff
+}
+.reg-fg input.valid{border-color:var(--success)}
+.reg-fg input.invalid{border-color:var(--danger)}
+.reg-fg .fi{position:absolute;right:.8rem;top:2.35rem;font-size:.9rem;pointer-events:none}
+.reg-fg .fi.ok{color:var(--success)}.reg-fg .fi.ng{color:var(--danger)}
+.reg-ferr{color:var(--danger);font-size:.77rem;margin-top:.28rem;display:none}
+.reg-hint{color:#9aa3ae;font-size:.76rem;margin-top:.28rem}
+
+/* PASSWORD STRENGTH */
+.pwd-strength-wrap{margin-top:.4rem}
+.pwd-bars{display:flex;gap:3px;height:4px;border-radius:2px;overflow:hidden}
+.pwd-bar{flex:1;background:#e5e9ef;border-radius:2px;transition:background .3s}
+.pwd-bar.weak{background:var(--danger)}
+.pwd-bar.fair{background:var(--gold)}
+.pwd-bar.good{background:#27ae60}
+.pwd-label{font-size:.74rem;color:#9aa;margin-top:.28rem}
+
+/* STEP NAVIGATION */
+.reg-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #eef0f3}
+.btn-submit{padding:.6rem 1.6rem;background:var(--success);color:#fff;border:none;border-radius:8px;
+  font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.45rem;transition:background .2s,transform .1s}
+.btn-submit:hover{background:#27ae60;transform:translateY(-1px)}
+
+/* SUCCESS SCREEN */
+.reg-success{text-align:center;padding:2rem 1rem;animation:slideUp .4s ease}
+.reg-success .success-ico{font-size:4rem;margin-bottom:1rem;display:block}
+.reg-success h2{font-family:'Playfair Display',serif;font-size:1.85rem;color:var(--primary);margin-bottom:.5rem}
+.reg-success p{color:#777;max-width:340px;margin:0 auto 1.5rem;line-height:1.6}
+.reg-success .profile-preview{
+  background:linear-gradient(135deg,#f0f4f8,#e8edf3);
+  border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:1rem;text-align:left
+}
+.reg-success .profile-preview .big-av{font-size:2.5rem;width:60px;height:60px;border-radius:50%;background:#fff;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.1);flex-shrink:0}
+.reg-success .profile-preview h3{font-size:1.05rem;color:var(--primary);margin-bottom:.2rem}
+.reg-success .profile-preview p{color:#888;font-size:.82rem;margin:0}
+.go-home-btn{padding:.7rem 2rem;background:var(--accent);color:#fff;border:none;border-radius:8px;
+  font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s}
+.go-home-btn:hover{background:#2382c4}
+.login-link-row{margin-top:1.25rem;text-align:center;font-size:.85rem;color:#888}
+.login-link-row a{color:var(--accent);font-weight:500;cursor:pointer;text-decoration:none}
+.login-link-row a:hover{text-decoration:underline}
+
+@media(max-width:768px){
+  nav{flex-direction:column;padding:.75rem}
+  .search-wrap{max-width:100%;width:100%}
+  .reg-container{flex-direction:column}
+  .reg-left{width:100%;padding:1.5rem}
+  .reg-row{grid-template-columns:1fr}
+  .reg-right{max-height:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+<nav>
+  <a class="logo" href="Home.html">📚 Library Management System</a>
+  <ul class="menu">
+    <li><a href="Home.html">Home</a></li>
+    
+  </ul>
+  <div class="search-wrap">
+    <select id="searchCat">
+      <option>All</option><option>Title</option><option>Author</option><option>Genre</option>
+    </select>
+    <input type="text" id="searchQ" placeholder="Search books here…">
+    <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+  </div>
+  <div class="auth-btns">
+    <button class="btn-login" onclick="window.location.href='Login_jp.html'">Login</button>
+  </div>
+</nav>
+</header>
+
+<main>
+<div class="reg-container">
+
+  <!-- LEFT PANEL -->
+  <div class="reg-left">
+    <div>
+      <div class="reg-left-logo">📚 LibraryMS</div>
+      <div class="reg-left-tagline"></div>
+
+      <ul class="reg-perks">
+        
+      </ul>
+    </div>
+    <div class="reg-left-foot"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="reg-right" id="regRight">
+
+    <!-- ACCOUNT DETAILS -->
+    <div id="stepAccount">
+      <h2>Create Your Account</h2>
+      <p class="reg-sub">Fill in your credentials to get started — it's completely free.</p>
+
+      <div class="reg-row">
+        <div class="reg-fg">
+          <label>First Name <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="rFirstName" placeholder="Jane" oninput="liveValidate(this,'name')">
+          <i class="fas fi" id="fiFirstName"></i>
+          <div class="reg-ferr" id="errFirstName">Please enter your first name.</div>
+        </div>
+        <div class="reg-fg">
+          <label>Last Name <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="rLastName" placeholder="Austen" oninput="liveValidate(this,'name')">
+          <i class="fas fi" id="fiLastName"></i>
+          <div class="reg-ferr" id="errLastName">Please enter your last name.</div>
+        </div>
+      </div>
+
+      <div class="reg-fg">
+        <label>Email Address <span style="color:var(--danger)">*</span></label>
+        <input type="email" id="rEmail" placeholder="jane@example.com" oninput="liveValidate(this,'email')">
+        <i class="fas fi" id="fiEmail"></i>
+        <div class="reg-ferr" id="errEmail">Please enter a valid email address.</div>
+      </div>
+
+      <div class="reg-fg">
+        <label>Username <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="rUsername" placeholder="jane_reads" oninput="liveValidate(this,'username')">
+        <i class="fas fi" id="fiUsername"></i>
+        <div class="reg-ferr" id="errUsername">3–20 chars, letters, numbers, and underscores only.</div>
+        <div class="reg-hint">This will be displayed on your public profile.</div>
+      </div>
+
+      <div class="reg-fg">
+        <label>Password <span style="color:var(--danger)">*</span></label>
+        <input type="password" id="rPassword" placeholder="Create a strong password" oninput="checkPwdStrength();liveValidate(this,'pwd')">
+        <i class="fas fi" id="fiPassword"></i>
+        <div class="reg-ferr" id="errPassword">Password must be at least 8 characters.</div>
+        <div class="pwd-strength-wrap" id="pwdStrengthWrap" style="display:none">
+          <div class="pwd-bars">
+            <div class="pwd-bar" id="pb0"></div>
+            <div class="pwd-bar" id="pb1"></div>
+            <div class="pwd-bar" id="pb2"></div>
+            <div class="pwd-bar" id="pb3"></div>
+          </div>
+          <div class="pwd-label" id="pwdLabel">Strength: —</div>
+        </div>
+      </div>
+
+      <div class="reg-fg">
+        <label>Confirm Password <span style="color:var(--danger)">*</span></label>
+        <input type="password" id="rConfirmPwd" placeholder="Repeat your password" oninput="liveValidate(this,'confirm')">
+        <i class="fas fi" id="fiConfirmPwd"></i>
+        <div class="reg-ferr" id="errConfirmPwd">Passwords do not match.</div>
+      </div>
+
+      <div class="reg-nav">
+        <div style="font-size:.82rem;color:#aaa">Already have an account? <a href="Login_jp.html" style="color:var(--accent)">Login</a></div>
+        <button class="btn-submit" onclick="submitReg()"><i class="fas fa-check"></i> Create Account</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="stepSuccess" style="display:none">
+      <div class="reg-success">
+        <span class="success-ico">🎉</span>
+        <h2>Welcome to the Library!</h2>
+        <p>Your account has been created. Start exploring 70,000+ free books right away.</p>
+        <div class="profile-preview" id="successProfile"></div>
+        <button class="go-home-btn" onclick="window.location.href='Home.html'">
+          <i class="fas fa-home"></i> Go to My Library
+        </button>
+        <div class="login-link-row" style="margin-top:.75rem;font-size:.8rem;color:#bbb">Account saved in this browser session.</div>
+      </div>
+    </div>
+
+  </div><!-- /reg-right -->
+</div><!-- /reg-container -->
+</main>
+
+<script>
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function doSearch(){
+  const q = document.getElementById('searchQ').value.trim();
+  const cat = document.getElementById('searchCat').value;
+  if(!q){ document.getElementById('searchQ').focus(); return; }
+  window.location.href = `search.html?q=${encodeURIComponent(q)}&cat=${encodeURIComponent(cat)}`;
+}
+document.getElementById('searchQ').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
+
+function validateAccount(){
+  let ok = true;
+  const fn = document.getElementById('rFirstName').value.trim();
+  const ln = document.getElementById('rLastName').value.trim();
+  const em = document.getElementById('rEmail').value.trim();
+  const un = document.getElementById('rUsername').value.trim();
+  const pw = document.getElementById('rPassword').value;
+  const cp = document.getElementById('rConfirmPwd').value;
+
+  function setErr(id, fiId, show){
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+    const fi = document.getElementById(fiId);
+    if(fi) fi.className = 'fas fi ' + (show ? 'fa-times-circle ng' : 'fa-check-circle ok');
+  }
+
+  if(!fn){ setErr('errFirstName','fiFirstName',true); ok=false; } else { setErr('errFirstName','fiFirstName',false); }
+  if(!ln){ setErr('errLastName','fiLastName',true); ok=false; } else { setErr('errLastName','fiLastName',false); }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ setErr('errEmail','fiEmail',true); ok=false; } else { setErr('errEmail','fiEmail',false); }
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(un)){ setErr('errUsername','fiUsername',true); ok=false; } else { setErr('errUsername','fiUsername',false); }
+  if(pw.length < 8){ setErr('errPassword','fiPassword',true); ok=false; } else { setErr('errPassword','fiPassword',false); }
+  if(pw !== cp || !cp){ setErr('errConfirmPwd','fiConfirmPwd',true); ok=false; } else { setErr('errConfirmPwd','fiConfirmPwd',false); }
+  return ok;
+}
+
+function liveValidate(input, type){
+  const fiId = 'fi' + input.id.charAt(1).toUpperCase() + input.id.slice(2);
+  const fi = document.getElementById(fiId);
+  if(!fi) return;
+  let valid = false;
+  if(type==='name') valid = input.value.trim().length > 0;
+  if(type==='email') valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+  if(type==='username') valid = /^[a-zA-Z0-9_]{3,20}$/.test(input.value.trim());
+  if(type==='pwd') valid = input.value.length >= 8;
+  if(type==='confirm') valid = input.value === document.getElementById('rPassword').value && input.value.length > 0;
+  input.classList.toggle('valid', valid);
+  input.classList.toggle('invalid', !valid && input.value.length > 0);
+  fi.className = 'fas fi ' + (valid ? 'fa-check-circle ok' : (input.value.length > 0 ? 'fa-times-circle ng' : ''));
+}
+
+function checkPwdStrength(){
+  const pwd = document.getElementById('rPassword').value;
+  const wrap = document.getElementById('pwdStrengthWrap');
+  if(!pwd){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  let score = 0;
+  if(pwd.length >= 8) score++;
+  if(pwd.length >= 12) score++;
+  if(/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+  if(/\d/.test(pwd)) score++;
+  if(/[^A-Za-z0-9]/.test(pwd)) score++;
+  const level = score <= 1 ? 'weak' : score <= 3 ? 'fair' : 'good';
+  const labels = {weak:'Weak',fair:'Fair',good:'Strong'};
+  const colors = {weak:'var(--danger)',fair:'var(--gold)',good:'#27ae60'};
+  for(let i=0;i<4;i++){
+    const bar = document.getElementById('pb'+i);
+    bar.className = 'pwd-bar';
+    if(i < Math.ceil(score * 4/5)) bar.classList.add(level);
+  }
+  document.getElementById('pwdLabel').textContent = `Strength: ${labels[level]}`;
+  document.getElementById('pwdLabel').style.color = colors[level];
+}
+
+function submitReg(){
+  if(!validateAccount()) return;
+  const userData = {
+    firstName: document.getElementById('rFirstName').value.trim(),
+    lastName:  document.getElementById('rLastName').value.trim(),
+    email:     document.getElementById('rEmail').value.trim(),
+    username:  document.getElementById('rUsername').value.trim(),
+    avatar:    '📚',
+    joined:    new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'})
+  };
+  localStorage.setItem('lms_user', JSON.stringify(userData));
+  localStorage.setItem('lms_login','1');
+  localStorage.setItem('lms_name', userData.firstName);
+
+  document.getElementById('stepAccount').style.display='none';
+  document.getElementById('stepSuccess').style.display='block';
+
+  document.getElementById('successProfile').innerHTML = `
+    <div class="big-av">${userData.avatar}</div>
+    <div>
+      <h3>${esc(userData.firstName)} ${esc(userData.lastName)}</h3>
+      <p>@${esc(userData.username)}</p>
+      <p style="margin-top:.2rem;font-size:.8rem;color:#aaa">Joined ${esc(userData.joined)}</p>
+    </div>`;
+}
+</script>
+</body>
+</html>

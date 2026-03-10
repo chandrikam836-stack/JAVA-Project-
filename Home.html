@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Management System – Home</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2c3e50;--accent:#3498db;--success:#2ecc71;
+  --danger:#e74c3c;--gold:#f39c12;--purple:#8e44ad;
+  --bg:#f4f6f9;--card:#fff;--shadow:0 4px 16px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#333;min-height:100vh}
+
+/* NAV */
+header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+nav{display:flex;justify-content:space-between;align-items:center;padding:.85rem 2rem;max-width:1300px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--primary);cursor:pointer;white-space:nowrap;text-decoration:none}
+.menu{display:flex;list-style:none;gap:1.2rem}
+.menu a{text-decoration:none;color:#555;font-weight:500;font-size:.9rem;transition:color .2s}
+.menu a:hover,.menu a.active{color:var(--accent)}
+.search-wrap{display:flex;flex:1;max-width:420px}
+.search-wrap select{padding:.48rem .7rem;border:1px solid #ddd;border-right:none;border-radius:6px 0 0 6px;background:#f8f8f8;font-size:.85rem;cursor:pointer}
+.search-wrap input{flex:1;padding:.48rem .75rem;border:1px solid #ddd;font-size:.88rem;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap button{padding:.48rem .85rem;background:var(--accent);border:none;border-radius:0 6px 6px 0;color:#fff;cursor:pointer;transition:background .2s}
+.search-wrap button:hover{background:#2382c4}
+.auth-btns{display:flex;align-items:center;gap:.4rem}
+.auth-btns span{font-weight:500;color:var(--primary);font-size:.88rem;white-space:nowrap}
+.auth-btns button{padding:.4rem .9rem;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:500;font-family:inherit;transition:opacity .2s}
+.btn-login{background:var(--accent);color:#fff}
+.btn-signup{background:var(--success);color:#fff}
+.btn-logout{background:var(--danger);color:#fff}
+
+/* MAIN */
+main{max-width:1300px;margin:0 auto;padding:2rem}
+.page{display:none}
+.page.active{display:block}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.75rem;flex-wrap:wrap;align-items:center}
+.tab-btn{padding:.45rem 1.1rem;border:2px solid #dde1e7;border-radius:25px;background:#fff;
+  cursor:pointer;font-size:.85rem;font-weight:500;color:#666;transition:all .2s;font-family:inherit}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-btn:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+.tab-count{background:rgba(0,0,0,.12);color:inherit;font-size:.72rem;padding:.1rem .4rem;border-radius:10px;margin-left:.3rem}
+
+/* BANNER */
+.banner{border-radius:14px;overflow:hidden;position:relative;height:300px;margin-bottom:2.5rem;box-shadow:var(--shadow)}
+.banner img{width:100%;height:100%;object-fit:cover}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(44,62,80,.78),rgba(44,62,80,.15));
+  display:flex;flex-direction:column;justify-content:center;padding:2.5rem 3rem}
+.banner-overlay h1{font-family:'Playfair Display',serif;font-size:2.1rem;color:#fff;margin-bottom:.6rem;animation:fadeInLeft .6s ease both}
+.banner-overlay p{color:rgba(255,255,255,.88);max-width:480px;margin-bottom:1rem;animation:fadeInLeft .6s .15s ease both}
+.badge-row{display:flex;gap:.5rem;flex-wrap:wrap;animation:fadeInLeft .6s .3s ease both}
+@keyframes fadeInLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .75rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(46,204,113,.9);color:#fff}
+.badge-blue{background:rgba(52,152,219,.9);color:#fff}
+.badge-purple{background:rgba(142,68,173,.9);color:#fff}
+.badge-orange{background:rgba(230,126,34,.9);color:#fff}
+.badge-red{background:rgba(231,76,60,.9);color:#fff}
+.badge-teal{background:rgba(22,160,133,.9);color:#fff}
+.badge-brown{background:rgba(130,80,30,.9);color:#fff}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+.stat-card{background:#fff;border-radius:10px;padding:.75rem 1.25rem;box-shadow:var(--shadow);display:flex;align-items:center;gap:.75rem;flex:1;min-width:140px;animation:fadeUp .5s ease both}
+.stat-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff}
+.stat-icon.blue{background:var(--accent)}
+.stat-icon.green{background:var(--success)}
+.stat-icon.purple{background:var(--purple)}
+.stat-icon.gold{background:var(--gold)}
+.stat-icon.red{background:var(--danger)}
+.stat-icon.orange{background:#e67e22}
+.stat-icon.teal{background:#16a085}
+.stat-icon.brown{background:#7d4f1e}
+.stat-val{font-size:1.25rem;font-weight:700;color:var(--primary);line-height:1}
+.stat-lbl{font-size:.75rem;color:#888;margin-top:.15rem}
+
+/* SECTION HEADING */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.sec-head h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary)}
+.see-all{color:var(--accent);font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:none;padding:0}
+.see-all:hover{text-decoration:underline}
+
+/* HORIZONTAL SCROLL ROW */
+.book-row{display:flex;gap:1.1rem;overflow-x:auto;padding-bottom:.75rem;scroll-snap-type:x mandatory}
+.book-row::-webkit-scrollbar{height:5px}
+.book-row::-webkit-scrollbar-track{background:#eee;border-radius:3px}
+.book-row::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+
+/* GRID */
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1.25rem}
+
+/* BOOK CARD */
+.book-card{background:#fff;border-radius:10px;box-shadow:var(--shadow);padding:.9rem;text-align:center;
+  position:relative;transition:transform .2s,box-shadow .2s;cursor:pointer;min-width:175px;flex-shrink:0;scroll-snap-align:start;
+  animation:fadeUp .35s ease both;display:flex;flex-direction:column}
+.book-card:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.book-cover{width:100%;height:220px;object-fit:cover;border-radius:7px;margin-bottom:.7rem;background:#e8ecf0}
+.cover-ph{width:100%;height:220px;border-radius:7px;margin-bottom:.7rem;
+  background:linear-gradient(135deg,#dde3ea,#c8d1db);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:#9aaabb}
+.book-title{font-weight:600;font-size:.88rem;color:var(--primary);margin-bottom:.2rem;line-height:1.3}
+.book-author{color:#888;font-size:.8rem;margin-bottom:.4rem}
+.book-genre{font-size:.73rem;color:#aaa;margin-bottom:.6rem}
+.ribbon{position:absolute;top:8px;left:8px;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:4px;letter-spacing:.4px;color:#fff;z-index:2}
+.r-free{background:var(--success)}
+.r-pdf{background:var(--danger)}
+.r-gut{background:var(--purple)}
+.r-mit{background:#e67e22}
+.r-std{background:#2980b9}
+.r-teal{background:#16a085}
+.card-btns{display:flex;gap:.35rem;margin-top:auto;padding-top:.5rem}
+.card-btns a,.card-btns button{flex:1;padding:.38rem .2rem;border:none;border-radius:5px;font-size:.76rem;font-weight:600;
+  font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.25rem;text-decoration:none;transition:opacity .2s}
+.card-btns a:hover,.card-btns button:hover{opacity:.83}
+.cb-read{background:var(--success);color:#fff}
+.cb-info{background:var(--accent);color:#fff}
+
+/* SOURCE PILL */
+.src-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;color:#777;margin-bottom:.4rem}
+.src-dot{width:6px;height:6px;border-radius:50%}
+.dot-gut{background:var(--purple)}.dot-ol{background:var(--gold)}.dot-ia{background:#27ae60}.dot-std{background:var(--accent)}
+.dot-mit{background:#e67e22}.dot-gh{background:#2c3e50}.dot-arxiv{background:#c0392b}
+
+/* BACK LINK */
+.back-lnk{display:inline-flex;align-items:center;gap:.4rem;color:var(--accent);font-weight:500;font-size:.88rem;
+  margin-bottom:1.25rem;cursor:pointer;border:none;background:none;font-family:inherit}
+.back-lnk:hover{text-decoration:underline}
+
+/* LOADING */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:1rem;color:#888}
+.spinner{width:44px;height:44px;border:4px solid #e0e6ed;border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;text-align:center;gap:1rem}
+.not-found .nf-ico{font-size:4rem;color:#c8d0da}
+.not-found h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary)}
+.not-found p{color:#888;max-width:340px}
+
+/* DETAIL MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;justify-content:center;align-items:center;padding:1rem}
+.overlay.open{display:flex}
+.detail-box{background:#fff;border-radius:16px;max-width:660px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
+  position:relative;animation:slideUp .25s ease;box-shadow:0 16px 48px rgba(0,0,0,.28)}
+@keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.detail-head{background:linear-gradient(135deg,#2c3e50,#34495e);padding:1.75rem;display:flex;gap:1.4rem;color:#fff;align-items:flex-start;flex-shrink:0}
+.detail-cover{width:105px;height:155px;object-fit:cover;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.45);flex-shrink:0}
+.detail-cover-ph{width:105px;height:155px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:3rem;flex-shrink:0}
+.detail-info h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.3rem;line-height:1.3}
+.detail-meta span{display:inline-block;background:rgba(255,255,255,.15);font-size:.75rem;padding:.2rem .55rem;border-radius:20px;margin:.15rem .15rem .15rem 0}
+.det-author{color:rgba(255,255,255,.8);margin-bottom:.5rem;font-size:.92rem}
+.detail-body{padding:1.5rem;overflow-y:auto;flex:1}
+.dl-head{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--primary);margin-bottom:.85rem}
+.dl-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.dl-btn{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem 1rem;border:none;border-radius:7px;
+  cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;text-decoration:none;transition:opacity .2s,transform .1s}
+.dl-btn:hover{opacity:.85;transform:translateY(-1px)}
+.dl-read{background:var(--success);color:#fff}
+.dl-html{background:var(--accent);color:#fff}
+.dl-txt{background:#7f8c8d;color:#fff}
+.dl-mobi{background:var(--gold);color:#fff}
+.note-box{background:#f0f4f8;border-radius:8px;padding:.7rem 1rem;font-size:.81rem;color:#555;display:flex;gap:.5rem;align-items:flex-start}
+.note-box i{color:var(--accent);margin-top:2px;flex-shrink:0}
+.det-close{position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s}
+.det-close:hover{background:rgba(255,255,255,.35)}
+
+/* LEVEL BADGE in detail */
+.level-tag{display:inline-block;font-size:.7rem;padding:.15rem .5rem;border-radius:4px;font-weight:700;margin-left:.4rem;vertical-align:middle}
+.lv-beginner{background:#d5f5e3;color:#1e8449}
+.lv-intermediate{background:#d6eaf8;color:#1a5276}
+.lv-advanced{background:#fde8e8;color:#922b21}
+
+@media(max-width:768px){
+  nav{flex-direction:column;padding:.75rem}
+  .search-wrap{max-width:100%;width:100%}
+  .banner{height:210px}
+  .banner-overlay{padding:1.25rem 1.5rem}
+  .banner-overlay h1{font-size:1.4rem}
+  .books-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:1rem}
+  .book-row .book-card{min-width:155px}
+  .detail-head{flex-direction:column;align-items:center;text-align:center}
+  .stats-bar{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+<nav>
+  <a class="logo" href="hom.html">📚 Library Management System</a>
+  <ul class="menu">
+    <li><a href="hom.html" id="navHome" class="active">Home</a></li>
+  </ul>
+  <div class="search-wrap">
+    
+    <input type="text" id="searchQ" placeholder="Search here for more books...">
+    <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+  </div>
+  <div class="auth-btns">
+    <span id="wlcUser"></span>
+    <button class="btn-login" id="btnLogin" onclick="window.location.href='Login_jp.html'">Login</button>
+    <button class="btn-signup" id="btnSignup" onclick="window.location.href='register (2).html'">Sign Up</button>
+    <button class="btn-logout" id="btnLogout" style="display:none" onclick="doLogout()">Logout</button>
+  </div>
+</nav>
+</header>
+
+<main>
+
+<!-- HOME PAGE -->
+<div class="page active" id="pgHome">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&auto=format&fit=crop&q=80" alt="Library">
+    <div class="banner-overlay">
+      <h1>Your Free Digital Library</h1>
+      <p>Explore 100+ books written by amazing authors. — 100% free to read &amp; Expand your knowledge forever with unlimited learning. Engineering, Fiction, Non Fiction &amp; more.</p>
+      <div class="badge-row">
+        <span class="badge badge-green"><i class="fas fa-unlock-alt"></i> Always Free</span>
+        <span class="badge badge-purple"><i class="fas fa-globe"></i> Read Online</span>
+        <span class="badge badge-orange"><i class="fas fa-robot"></i> AI/ML Books</span>
+        <span class="badge badge-red"><i class="fas fa-shield-alt"></i> Cybersecurity</span>
+        <span class="badge badge-teal"><i class="fas fa-cogs"></i> Engineering</span>
+        <span class="badge badge-brown"><i class="fas fa-palette"></i> Arts &amp; Crafts</span>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- ENGINEERING SECTIONS -->
+  <div class="sec-head"><h2>⚡ Electrical &amp; Electronics (ECE)</h2><button class="see-all" onclick="filterGenre('Electrical & Electronics')">See all →</button></div>
+  <div class="book-row" id="rowECE"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🏗️ Civil Engineering</h2><button class="see-all" onclick="filterGenre('Civil Engineering')">See all →</button></div>
+  <div class="book-row" id="rowCivil"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>⚙️ Mechanical Engineering</h2><button class="see-all" onclick="filterGenre('Mechanical Engineering')">See all →</button></div>
+  <div class="book-row" id="rowMech"></div>
+
+  <!-- ARTS & CREATIVE -->
+  <div class="sec-head" style="margin-top:2rem"><h2>🎨 Arts &amp; Crafts</h2><button class="see-all" onclick="filterGenre('Arts & Crafts')">See all →</button></div>
+  <div class="book-row" id="rowArts"></div>
+
+  <!-- FICTION & NON-FICTION -->
+  <div class="sec-head" style="margin-top:2rem"><h2>📚Non-Fiction</h2><button class="see-all" onclick="filterGenre('Fiction')">See all →</button></div>
+  <div class="book-row" id="rowFiction"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🌍Fiction</h2><button class="see-all" onclick="filterGenre('Non-Fiction')">See all →</button></div>
+  <div class="book-row" id="rowNonFiction"></div>
+
+  <!-- TECH SECTIONS -->
+  <div class="sec-head" style="margin-top:2rem"><h2>🤖 Artificial Intelligence &amp; Machine Learning</h2><button class="see-all" onclick="filterGenre('AI & Machine Learning')">See all →</button></div>
+  <div class="book-row" id="rowAI"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🧠 Deep Learning &amp; Neural Networks</h2><button class="see-all" onclick="filterGenre('Deep Learning')">See all →</button></div>
+  <div class="book-row" id="rowDL"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>📊 Data Science &amp; Analytics</h2><button class="see-all" onclick="filterGenre('Data Science')">See all →</button></div>
+  <div class="book-row" id="rowDS"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🔐 Cybersecurity</h2><button class="see-all" onclick="filterGenre('Cybersecurity')">See all →</button></div>
+  <div class="book-row" id="rowCyber"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>💬 NLP &amp; Large Language Models</h2><button class="see-all" onclick="filterGenre('NLP & LLMs')">See all →</button></div>
+  <div class="book-row" id="rowNLP"></div>
+
+  <!-- CLASSIC SECTIONS -->
+  <div class="sec-head" style="margin-top:2rem"><h2>📖 Classic Literature</h2><button class="see-all" onclick="filterGenre('Classic Literature')">See all →</button></div>
+  <div class="book-row" id="rowClassic"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🔬 Science &amp; Philosophy</h2><button class="see-all" onclick="filterGenre('Science & Philosophy')">See all →</button></div>
+  <div class="book-row" id="rowScience"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🗺️ Adventure &amp; Mystery</h2><button class="see-all" onclick="filterGenre('Adventure & Mystery')">See all →</button></div>
+  <div class="book-row" id="rowAdventure"></div>
+</div>
+
+<!-- BROWSE/SEARCH RESULTS PAGE (used internally for "See all" and search) -->
+<div class="page" id="pgBrowse">
+  <button class="back-lnk" onclick="goHome()"><i class="fas fa-arrow-left"></i> Back to Home</button>
+  <div class="sec-head"><h2 id="browseTitle">All Free Books</h2><span id="browseCount" style="color:#888;font-size:.88rem"></span></div>
+  <div class="tabs" id="genreTabs"></div>
+  <div class="books-grid" id="browseGrid"></div>
+</div>
+
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-box">
+    <button class="det-close" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+    <div id="detContent"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   BOOKS DATABASE — Original + New Tech/AI/Cybersecurity + Engineering + Arts + Fiction + Non-Fiction
+   ═══════════════════════════════════════════════════════════ */
+const BOOKS = [
+
+  /* ── CLASSIC LITERATURE ── */
+  {id:1,title:"Pride and Prejudice",author:"Jane Austen",year:1813,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/9255566-L.jpg",read:"https://www.gutenberg.org/ebooks/1342",pdf:"https://www.gutenberg.org/ebooks/1342.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/1342.epub.images",source:"gutenberg",level:"all",desc:"A witty romantic novel following Elizabeth Bennet as she deals with issues of manners, upbringing, morality, education, and marriage."},
+  {id:2,title:"Sense and Sensibility",author:"Jane Austen",year:1811,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8739782-L.jpg",read:"https://www.gutenberg.org/ebooks/161",pdf:"https://www.gutenberg.org/ebooks/161.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/161.epub.images",source:"gutenberg",level:"all",desc:"The story of the Dashwood sisters, Elinor and Marianne, as they come of age and seek love."},
+  {id:3,title:"Emma",author:"Jane Austen",year:1815,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8237136-L.jpg",read:"https://www.gutenberg.org/ebooks/158",pdf:"https://www.gutenberg.org/ebooks/158.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/158.epub.images",source:"gutenberg",level:"all",desc:"A novel about youthful hubris and romantic misunderstandings in 18th-century England."},
+  {id:4,title:"1984",author:"George Orwell",year:1949,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/7222246-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=1984+Orwell&submit_search=Go%21_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Dystopian social science fiction following Winston Smith under the oppressive surveillance state of Big Brother."},
+  {id:5,title:"Animal Farm",author:"George Orwell",year:1945,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8739596-L.jpg",read:"https://www.gutenberg.org/ebooks/5765",pdf:"https://www.gutenberg.org/ebooks/5765.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/5765.epub.images",source:"gutenberg",level:"all",desc:"An allegorical novella that reflects events leading up to the Russian Revolution and Stalinist era."},
+  {id:6,title:"The Great Gatsby",author:"F. Scott Fitzgerald",year:1925,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231856-L.jpg",read:"https://www.gutenberg.org/ebooks/64317",pdf:"https://www.gutenberg.org/ebooks/64317.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/64317.epub.images",source:"gutenberg",level:"all",desc:"A novel of the Jazz Age exploring themes of decadence, idealism, and excess in 1920s America."},
+  {id:7,title:"Brave New World",author:"Aldous Huxley",year:1932,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8232120-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Brave+New+World+Huxley&submit_search=Go%21_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A dystopian novel set in a futuristic World State of genetically modified citizens."},
+  {id:8,title:"Frankenstein",author:"Mary Shelley",year:1818,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8775398-L.jpg",read:"https://www.gutenberg.org/ebooks/84",pdf:"https://www.gutenberg.org/ebooks/84.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/84.epub.images",source:"gutenberg",level:"all",desc:"A Gothic novel about the young scientist Victor Frankenstein and the creature he creates."},
+  {id:9,title:"Dracula",author:"Bram Stoker",year:1897,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8810475-L.jpg",read:"https://www.gutenberg.org/ebooks/345",pdf:"https://www.gutenberg.org/ebooks/345.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/345.epub.images",source:"gutenberg",level:"all",desc:"The quintessential vampire novel introducing Count Dracula in a Gothic horror masterpiece."},
+  {id:10,title:"Wuthering Heights",author:"Emily Brontë",year:1847,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/id/8231905-L.jpg",read:"https://www.gutenberg.org/ebooks/768",pdf:"https://www.gutenberg.org/ebooks/768.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/768.epub.images",source:"gutenberg",level:"all",desc:"A dark, romantic novel about the passionate relationship between Heathcliff and Catherine."},
+
+  /* ── ADVENTURE & MYSTERY ── */
+  {id:30,title:"The Adventures of Sherlock Holmes",author:"Arthur Conan Doyle",year:1892,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739161-L.jpg",read:"https://www.gutenberg.org/ebooks/1661",pdf:"https://www.gutenberg.org/ebooks/1661.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/1661.epub.images",source:"gutenberg",level:"all",desc:"Twelve stories featuring the brilliant detective Sherlock Holmes and his companion Dr. Watson."},
+  {id:31,title:"The Hound of the Baskervilles",author:"Arthur Conan Doyle",year:1902,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739180-L.jpg",read:"https://www.gutenberg.org/ebooks/2852",pdf:"https://www.gutenberg.org/ebooks/2852.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/2852.epub.images",source:"gutenberg",level:"all",desc:"Holmes investigates the legend of a supernatural hound stalking the Baskerville family."},
+  {id:32,title:"Treasure Island",author:"Robert Louis Stevenson",year:1883,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739597-L.jpg",read:"https://www.gutenberg.org/ebooks/120",pdf:"https://www.gutenberg.org/ebooks/120.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/120.epub.images",source:"gutenberg",level:"all",desc:"Jim Hawkins embarks on a swashbuckling adventure to find buried pirate treasure."},
+  {id:33,title:"Robinson Crusoe",author:"Daniel Defoe",year:1719,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8739601-L.jpg",read:"https://www.gutenberg.org/ebooks/521",pdf:"https://www.gutenberg.org/ebooks/521.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/521.epub.images",source:"gutenberg",level:"all",desc:"The classic survival story of a man shipwrecked on a remote tropical island for 28 years."},
+  {id:34,title:"Around the World in Eighty Days",author:"Jules Verne",year:1872,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8231860-L.jpg",read:"https://www.gutenberg.org/ebooks/103",pdf:"https://www.gutenberg.org/ebooks/103.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/103.epub.images",source:"gutenberg",level:"all",desc:"Phileas Fogg bets he can circumnavigate the globe in 80 days in this classic adventure."},
+  {id:35,title:"Twenty Thousand Leagues Under the Sea",author:"Jules Verne",year:1870,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/id/8231870-L.jpg",read:"https://www.gutenberg.org/ebooks/164",pdf:"https://www.gutenberg.org/ebooks/164.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/164.epub.images",source:"gutenberg",level:"all",desc:"Professor Aronnax's voyage aboard the submarine Nautilus with the enigmatic Captain Nemo."},
+
+  /* ── SCIENCE & PHILOSOPHY ── */
+  {id:50,title:"On the Origin of Species",author:"Charles Darwin",year:1859,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232500-L.jpg",read:"https://www.gutenberg.org/ebooks/1228",pdf:"https://www.gutenberg.org/ebooks/1228.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/1228.epub.images",source:"gutenberg",level:"all",desc:"Darwin's seminal work introducing the scientific theory of evolution by natural selection."},
+  {id:51,title:"The Republic",author:"Plato",year:-380,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232520-L.jpg",read:"https://www.gutenberg.org/ebooks/1497",pdf:"https://www.gutenberg.org/ebooks/1497.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/1497.epub.images",source:"gutenberg",level:"all",desc:"Plato's Socratic dialogue on justice, the just city-state, and the just man."},
+  {id:52,title:"The Prince",author:"Niccolò Machiavelli",year:1532,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232540-L.jpg",read:"https://www.gutenberg.org/ebooks/1232",pdf:"https://www.gutenberg.org/ebooks/1232.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/1232.epub.images",source:"gutenberg",level:"all",desc:"A political treatise on how rulers acquire and maintain political power."},
+  {id:53,title:"Meditations",author:"Marcus Aurelius",year:180,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232560-L.jpg",read:"https://www.gutenberg.org/ebooks/2680",pdf:"https://www.gutenberg.org/ebooks/2680.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/2680.epub.images",source:"gutenberg",level:"all",desc:"A series of personal writings by the Roman Emperor on Stoic philosophy and self-improvement."},
+  {id:54,title:"The Art of War",author:"Sun Tzu",year:-500,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232580-L.jpg",read:"https://www.gutenberg.org/ebooks/132",pdf:"https://www.gutenberg.org/ebooks/132.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/132.epub.images",source:"gutenberg",level:"all",desc:"An ancient Chinese military treatise on strategy, still studied in business and martial arts."},
+  {id:55,title:"Relativity",author:"Albert Einstein",year:1916,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/id/8232590-L.jpg",read:"https://www.gutenberg.org/ebooks/5001",pdf:"https://www.gutenberg.org/ebooks/5001.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/5001.epub.images",source:"gutenberg",level:"all",desc:"Einstein's own accessible explanation of his groundbreaking theories of relativity."},
+
+  /* ── CHILDREN & FANTASY ── */
+  {id:70,title:"Alice's Adventures in Wonderland",author:"Lewis Carroll",year:1865,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739620-L.jpg",read:"https://www.gutenberg.org/ebooks/11",pdf:"https://www.gutenberg.org/ebooks/11.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/11.epub.images",source:"gutenberg",level:"all",desc:"Alice falls through a rabbit hole into a whimsical world of fantastical creatures."},
+  {id:71,title:"The Wonderful Wizard of Oz",author:"L. Frank Baum",year:1900,genre:"Children & Fantasy",cover:"https://covers.openlibrary.org/b/id/8739622-L.jpg",read:"https://www.gutenberg.org/ebooks/55",pdf:"https://www.gutenberg.org/ebooks/55.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/55.epub.images",source:"gutenberg",level:"all",desc:"Dorothy is swept to the magical Land of Oz and embarks on a quest to find home."},
+
+  /* ── BIOGRAPHY & HISTORY ── */
+  {id:80,title:"The Autobiography of Benjamin Franklin",author:"Benjamin Franklin",year:1791,genre:"Biography & History",cover:"https://covers.openlibrary.org/b/id/8740000-L.jpg",read:"https://www.gutenberg.org/ebooks/20203",pdf:"https://www.gutenberg.org/ebooks/20203.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/20203.epub.images",source:"gutenberg",level:"all",desc:"Franklin's self-written account of his rise from poverty to become one of America's founders."},
+
+  /* ── POETRY & DRAMA ── */
+  {id:90,title:"The Complete Works of Shakespeare",author:"William Shakespeare",year:1623,genre:"Poetry & Drama",cover:"https://covers.openlibrary.org/b/id/8232900-L.jpg",read:"https://www.gutenberg.org/ebooks/100",pdf:"https://www.gutenberg.org/ebooks/100.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/100.epub.images",source:"gutenberg",level:"all",desc:"The complete collection of Shakespeare's plays, sonnets, and poems."},
+
+  /* ── SELF-HELP ── */
+  {id:100,title:"How to Win Friends and Influence People",author:"Dale Carnegie",year:1936,genre:"Self-Help & Business",cover:"https://covers.openlibrary.org/b/id/8233100-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=How+to+Win+Friends+and+Influence+People&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A self-help book on interpersonal skills that has sold over 30 million copies worldwide."},
+
+  /* ════════════════════════════════════════════
+     ✦ AI & MACHINE LEARNING
+     ════════════════════════════════════════════ */
+  {id:200,title:"Pattern Recognition and Machine Learning",author:"Christopher M. Bishop",year:2006,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232200-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Pattern+Recognition+Machine+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"The gold-standard graduate textbook on probabilistic graphical models, Bayesian methods, and kernel approaches. Officially free PDF from Microsoft Research."},
+  {id:201,title:"The Elements of Statistical Learning",author:"Hastie, Tibshirani & Friedman",year:2009,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232201-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Elements+Statistical+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"A landmark Stanford reference on supervised and unsupervised learning, SVMs, neural networks, and boosting. Official free PDF from the authors."},
+  {id:202,title:"Understanding Machine Learning",author:"Shai Shalev-Shwartz & Shai Ben-David",year:2014,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232202-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Understanding+Machine+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Rigorous theoretical foundations of ML including PAC learning, VC dimension, and generalization bounds. Free PDF from Cambridge authors."},
+  {id:203,title:"Probabilistic Machine Learning (Book 1)",author:"Kevin P. Murphy",year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232203-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Probabilistic+Machine+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"A two-volume MIT Press series covering probabilistic ML fundamentals through diffusion models and generative modeling. Free draft PDFs from the author."},
+  {id:204,title:"CS229 Machine Learning Lecture Notes",author:"Andrew Ng & Tengyu Ma",year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232204-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Machine+Learning+Stanford&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Stanford's famous ML course notes by Andrew Ng. Covers regression, classification, neural networks, SVMs, EM algorithm, and reinforcement learning."},
+  {id:205,title:"Interpretable Machine Learning",author:"Christoph Molnar",year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232205-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Interpretable+Machine+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"A practical guide to making black-box ML models interpretable. Covers SHAP, LIME, partial dependence plots, and fairness metrics. Freely readable online."},
+  {id:206,title:"Algorithms for Decision Making",author:"Kochenderfer, Wheeler & Wray",year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232206-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Algorithms+Decision+Making&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Covers decision theory, reinforcement learning, and optimization with mathematical rigor. Full book freely available from MIT Press."},
+  {id:207,title:"A Brief Introduction to ML for Engineers",author:"Osvaldo Simeone",year:2018,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/id/8232207-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Machine+Learning+Engineers&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"A compact, mathematically grounded introduction designed for engineers transitioning into ML. Covers supervised, unsupervised, and Bayesian approaches."},
+
+  /* ════════════════════════════════════════════
+     ✦ DEEP LEARNING
+     ════════════════════════════════════════════ */
+  {id:210,title:"Deep Learning (MIT Book)",author:"Goodfellow, Bengio & Courville",year:2016,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232210-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Deep+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"The gold-standard graduate textbook on deep learning. Covers mathematical foundations, modern architectures, optimization, and regularization. Full text free from MIT Press."},
+  {id:211,title:"Dive into Deep Learning (D2L)",author:"Zhang, Lipton, Li & Smola",year:2023,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232211-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Deep+Learning+Neural+Networks&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Interactive textbook with live code in PyTorch, JAX, and TensorFlow. Adopted at 500+ universities across 70 countries. Covers transformers, attention, and diffusion models."},
+  {id:212,title:"Neural Networks and Deep Learning",author:"Michael Nielsen",year:2019,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232212-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Neural+Networks+Deep+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"Accessible, visual, and intuitive online book building understanding of neural networks from scratch. Great starting point before tackling Goodfellow et al."},
+  {id:213,title:"Graph Representation Learning",author:"William L. Hamilton",year:2020,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232213-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Graph+Representation+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"Definitive book on graph neural networks (GNNs). Covers node embeddings, message passing, link prediction, and community detection. Full free PDF."},
+  {id:214,title:"The Matrix Calculus You Need for Deep Learning",author:"Terence Parr & Jeremy Howard",year:2018,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232214-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Matrix+Calculus+Deep+Learning&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"A focused, no-nonsense guide to the matrix calculus that powers backpropagation and gradient-based optimization in neural networks."},
+  {id:215,title:"Machine Learning Systems Engineering",author:"Vijay Janapa Reddi",year:2024,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232215-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Machine+Learning+Systems&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Bridges ML and systems engineering from CNNs to transformers, hardware benchmarking, and deployment on edge devices. A living open textbook used globally."},
+  {id:216,title:"Reinforcement Learning: An Introduction",author:"Sutton & Barto",year:2018,genre:"Deep Learning",cover:"https://covers.openlibrary.org/b/id/8232216-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Reinforcement+Learning+Introduction&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The canonical RL textbook, foundational for understanding RLHF in modern LLMs. Covers MDPs, Q-learning, policy gradients, and function approximation. Free PDF from authors."},
+
+  /* ════════════════════════════════════════════
+     ✦ DATA SCIENCE
+     ════════════════════════════════════════════ */
+  {id:220,title:"Python for Data Analysis (3rd Ed.)",author:"Wes McKinney",year:2022,genre:"Data Science",cover:"https://covers.openlibrary.org/b/id/8232220-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Python+Data+Analysis&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"The definitive pandas reference, written by its creator. Covers data wrangling, cleaning, merging, groupby operations, and time-series analysis. Freely readable online."},
+  {id:221,title:"R for Data Science (2nd Ed.)",author:"Hadley Wickham et al.",year:2023,genre:"Data Science",cover:"https://covers.openlibrary.org/b/id/8232221-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=R+Data+Science&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"The standard introduction to data science using R and the tidyverse. Covers import, tidy, transform, visualize, model, and communicate. Fully free online."},
+  {id:222,title:"Foundations of Data Science",author:"Blum, Hopcroft & Kannan",year:2020,genre:"Data Science",cover:"https://covers.openlibrary.org/b/id/8232222-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Foundations+Data+Science&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Theoretical foundations for modern data science: high-dimensional geometry, SVD, random graphs, Markov chains, and clustering algorithms."},
+  {id:223,title:"Think Stats (2nd Ed.)",author:"Allen B. Downey",year:2014,genre:"Data Science",cover:"https://covers.openlibrary.org/b/id/8232223-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Think+Stats&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"Probability and statistics for programmers using Python and real datasets. Emphasis on computation over formulas. Free from the author (Green Tea Press)."},
+  {id:224,title:"Feature Engineering and Selection",author:"Max Kuhn & Kjell Johnson",year:2019,genre:"Data Science",cover:"https://covers.openlibrary.org/b/id/8232224-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Feature+Engineering&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Practical guide to transforming raw data into meaningful features. Covers encoding, imputation, transformations, and selection strategies with R and Python examples."},
+  {id:226,title:"Data Science from Scratch",author:"Joel Grus",year:2019,genre:"Data Science",cover:"https://covers.openlibrary.org/b/id/8232226-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Data+Science+Scratch&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"Implements ML algorithms from scratch using only Python's standard library. Ideal for understanding how things work internally. Full code freely on GitHub."},
+
+  /* ════════════════════════════════════════════
+     ✦ CYBERSECURITY
+     ════════════════════════════════════════════ */
+  {id:230,title:"Security of Ubiquitous Computing Systems",author:"Gildas Avoine et al.",year:2021,genre:"Cybersecurity",cover:"https://covers.openlibrary.org/b/id/8232230-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Cryptography+Security+Computing&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"Open access Springer book on cryptanalysis for IoT and embedded devices. Covers side-channel attacks, RFID security, and hardware vulnerabilities. Full free PDF."},
+  {id:232,title:"ML for Cybersecurity Cookbook",author:"Emmanuel Tsukerman",year:2019,genre:"Cybersecurity",cover:"https://covers.openlibrary.org/b/id/8232232-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Machine+Learning+Cybersecurity&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"80+ recipes for applying ML to detect malware, network anomalies, and intrusions using Python. All code freely on GitHub with practical exercises."},
+  {id:234,title:"Cryptography and Network Security",author:"Chris Bourke",year:2020,genre:"Cybersecurity",cover:"https://covers.openlibrary.org/b/id/8232234-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Cryptography+Network+Security&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Introduces cryptographic primitives, protocols, network security, and PKI. Covers AES, RSA, TLS, and digital signatures with clear examples."},
+  {id:236,title:"The Web Application Hacker's Handbook",author:"Stuttard & Pinto",year:2011,genre:"Cybersecurity",cover:"https://covers.openlibrary.org/b/id/8232236-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Web+Application+Security&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Comprehensive guide to web application security testing covering XSS, SQL injection, authentication attacks, and logic flaws. Widely used in penetration testing."},
+
+  /* ════════════════════════════════════════════
+     ✦ NLP & LLMs
+     ════════════════════════════════════════════ */
+  {id:240,title:"Speech and Language Processing (3rd Ed.)",author:"Jurafsky & Martin",year:2023,genre:"NLP & LLMs",cover:"https://covers.openlibrary.org/b/id/8232240-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Speech+Language+Processing&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The definitive NLP textbook covering tokenization, parsing, named entity recognition, coreference, neural language models, and transformers. Free Stanford draft."},
+  {id:241,title:"NLP with Transformers",author:"Tunstall, von Werra & Wolf",year:2022,genre:"NLP & LLMs",cover:"https://covers.openlibrary.org/b/id/8232241-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=NLP+Transformers&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Hands-on guide to the Hugging Face ecosystem for fine-tuning BERT, GPT, and T5 models for text classification, question answering, and generation."},
+  {id:242,title:"Build an LLM From Scratch",author:"Sebastian Raschka",year:2024,genre:"NLP & LLMs",cover:"https://covers.openlibrary.org/b/id/8232242-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Large+Language+Models&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Step-by-step guide to building a GPT-like LLM from scratch in PyTorch. Covers tokenization, attention mechanisms, pre-training, and instruction fine-tuning."},
+  {id:244,title:"Probabilistic ML: Advanced Topics",author:"Kevin P. Murphy",year:2023,genre:"NLP & LLMs",cover:"https://covers.openlibrary.org/b/id/8232244-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Probabilistic+Machine+Learning+Advanced&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"Volume 2 of Murphy's series covering advanced topics including diffusion models, flow models, transformers, and generative modeling. Free draft PDF from MIT Press."},
+
+  /* ════════════════════════════════════════════
+     ✦ NEW: ELECTRICAL & ELECTRONICS (ECE)
+     ════════════════════════════════════════════ */
+  {id:300,title:"The Art of Electronics",author:"Horowitz & Hill",year:2015,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232300-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Art+of+Electronics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The legendary bench reference for analog and digital electronics. Covers transistors, op-amps, microcontrollers, and signal processing with practical circuits."},
+  {id:301,title:"Fundamentals of Electric Circuits",author:"Alexander & Sadiku",year:2012,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232301-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Electric+Circuits+Fundamentals&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"A comprehensive introduction to circuit analysis covering DC/AC circuits, Thevenin/Norton theorems, Laplace transforms, and frequency response."},
+  {id:302,title:"Introduction to Signal Processing",author:"Orfanidis, Sophocles J.",year:2010,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232302-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Signal+Processing+Introduction&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Comprehensive free textbook on digital signal processing from Rutgers ECE. Covers sampling, filtering, FFT, and z-transforms with MATLAB examples."},
+  {id:303,title:"Electromagnetic Field Theory",author:"Bo Thidé",year:2011,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232303-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Electromagnetic+Field+Theory&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"A free, complete textbook on electromagnetic field theory covering Maxwell's equations, wave propagation, radiation, and relativistic electrodynamics."},
+  {id:304,title:"Control Systems – MIT OCW",author:"MIT OpenCourseWare",year:2022,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232304-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Control+Systems+Engineering&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"MIT OpenCourseWare lecture notes and problem sets on feedback control, PID controllers, state-space representation, and stability analysis."},
+  {id:305,title:"Electronic Devices and Circuit Theory",author:"Boylestad & Nashelsky",year:2012,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232305-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Electronic+Devices+Circuit+Theory&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"Classic undergraduate text on semiconductor devices, BJT/FET amplifiers, op-amps, and power supply circuits with comprehensive worked examples."},
+  {id:306,title:"Microwave Engineering",author:"David M. Pozar",year:2011,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232306-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Microwave+Engineering&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"The standard reference for RF and microwave engineering. Covers transmission lines, waveguides, filters, amplifiers, and mixer design for wireless systems."},
+  {id:307,title:"CMOS VLSI Design",author:"Weste & Harris",year:2010,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/id/8232307-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=VLSI+Design+CMOS&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"advanced",desc:"Comprehensive CMOS VLSI design covering combinational/sequential logic, datapath design, memory, and chip design flow with HDL examples."},
+
+  /* ════════════════════════════════════════════
+     ✦ NEW: CIVIL ENGINEERING
+     ════════════════════════════════════════════ */
+  {id:310,title:"Engineering Mechanics: Statics",author:"Meriam & Kraige",year:2016,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232310-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Engineering+Mechanics+Statics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"The most widely used statics textbook. Covers force systems, equilibrium, structures (trusses, beams, frames), distributed loads, and friction."},
+  {id:311,title:"Structural Analysis",author:"Hibbeler, R.C.",year:2018,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232311-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Structural+Analysis&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Covers analysis of statically determinate and indeterminate structures, virtual work, stiffness and flexibility methods, and influence lines."},
+  {id:312,title:"Properties of Concrete",author:"A.M. Neville",year:2011,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232312-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Concrete+Technology+Properties&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The definitive reference on concrete properties, materials, mix design, durability, testing, and quality control for construction engineers."},
+  {id:313,title:"Soil Mechanics and Foundations",author:"Muni Budhu",year:2015,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232313-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Soil+Mechanics+Foundations&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"A modern approach to geotechnical engineering covering soil classification, permeability, consolidation, shear strength, and foundation design."},
+  {id:314,title:"Open Channel Hydraulics",author:"Terry W. Sturm",year:2010,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232314-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Open+Channel+Hydraulics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Covers steady and unsteady flow in open channels, hydraulic jumps, gradually varied flow profiles, and bridge scour analysis."},
+  {id:315,title:"Transportation Engineering",author:"Garber & Hoel",year:2014,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232315-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Transportation+Engineering&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Comprehensive coverage of highway design, traffic engineering, geometric design, pavement design, and transportation planning."},
+  {id:316,title:"Steel Design",author:"Segui, William T.",year:2012,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/id/8232316-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Steel+Design+Structures&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"AISC-based steel structure design covering tension members, beams, columns, connections, and composite beams using LRFD and ASD methods."},
+
+  /* ════════════════════════════════════════════
+     ✦ NEW: MECHANICAL ENGINEERING
+     ════════════════════════════════════════════ */
+  {id:320,title:"Engineering Thermodynamics",author:"Cengel & Boles",year:2014,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232320-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Engineering+Thermodynamics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"The most adopted thermodynamics textbook. Covers laws of thermodynamics, steam/gas power cycles, refrigeration, and psychrometrics with real-world applications."},
+  {id:321,title:"Fluid Mechanics",author:"Frank M. White",year:2016,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232321-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Fluid+Mechanics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Covers fluid statics, kinematics, Bernoulli equation, viscous flow, boundary layers, turbomachinery, and compressible flow with numerous examples."},
+  {id:322,title:"Shigley's Mechanical Engineering Design",author:"Budynas & Nisbett",year:2015,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232322-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Mechanical+Engineering+Design&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The gold standard for machine element design. Covers failure theories, fatigue, shafts, gears, bearings, springs, and power screws."},
+  {id:323,title:"Manufacturing Engineering & Technology",author:"Kalpakjian & Schmid",year:2013,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232323-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Manufacturing+Engineering+Technology&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Comprehensive treatment of manufacturing processes including casting, forming, machining, welding, and additive manufacturing with economic considerations."},
+  {id:324,title:"Heat Transfer: A Practical Approach",author:"Cengel, Y.A.",year:2014,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232324-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Heat+Transfer&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Covers conduction, convection, radiation, and heat exchangers with practical engineering applications and modern computational approaches."},
+  {id:325,title:"Theory of Machines",author:"S.S. Rattan",year:2009,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232325-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Theory+of+Machines&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"Covers kinematics and dynamics of machines, gear trains, cams and followers, gyroscopes, governors, and balancing of rotating masses."},
+  {id:326,title:"Introduction to Robotics",author:"John J. Craig",year:2004,genre:"Mechanical Engineering",cover:"https://covers.openlibrary.org/b/id/8232326-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Introduction+Robotics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The classic robotics textbook covering spatial descriptions, kinematics, dynamics, trajectory planning, and robot programming."},
+
+  /* ════════════════════════════════════════════
+     ✦ NEW: ARTS & CRAFTS
+     ════════════════════════════════════════════ */
+  {id:330,title:"The Artist's Way",author:"Julia Cameron",year:1992,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232330-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Artist+Way+Creativity&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A 12-week program to unlock creativity and artistic potential. Introduces morning pages and artist dates as spiritual exercises for creative recovery."},
+  {id:331,title:"Drawing on the Right Side of the Brain",author:"Betty Edwards",year:1979,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232331-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Drawing+Right+Side+Brain&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"The classic drawing instruction book teaching perceptual skills: drawing edges, spaces, relationships, lights/shadows, and the gestalt for beginners and artists."},
+  {id:332,title:"The Elements of Color",author:"Johannes Itten",year:1970,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232332-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Elements+of+Color&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"The definitive guide to color theory from the Bauhaus master. Covers color contrasts, harmony, mixing, and the psychological impact of color in art."},
+  {id:333,title:"Interaction of Color",author:"Josef Albers",year:1963,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232333-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Interaction+of+Color&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"intermediate",desc:"A seminal Bauhaus work exploring how colors interact with each other perceptually. Essential reading for designers, painters, and visual artists."},
+  {id:334,title:"Craft in America",author:"Mary Schoeser",year:2007,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232334-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Craft+America&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A visual history of American craft traditions including ceramics, glass, fiber, metal, and wood. Celebrates the makers and movements that shaped American culture."},
+  {id:335,title:"The Complete Book of Knitting",author:"Barbara Abbey",year:1972,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232335-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Complete+Book+Knitting&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A comprehensive knitting reference covering stitches, patterns, garment construction, and finishing techniques for all skill levels."},
+  {id:336,title:"Graphic Design: The New Basics",author:"Lupton & Phillips",year:2015,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232336-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Graphic+Design+Basics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"beginner",desc:"A foundational graphic design textbook from the Maryland Institute College of Art covering point, line, plane, rhythm, pattern, and visual hierarchy."},
+  {id:337,title:"The Ceramics Bible",author:"Louisa Taylor",year:2011,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232337-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Ceramics+Pottery&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Complete reference on pottery and ceramics: clay bodies, hand building, wheel throwing, glazing, firing, and kiln techniques for beginners and advanced potters."},
+  {id:338,title:"Understanding Comics",author:"Scott McCloud",year:1993,genre:"Arts & Crafts",cover:"https://covers.openlibrary.org/b/id/8232338-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Understanding+Comics&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A groundbreaking analysis of the comics medium itself: visual vocabulary, closure, time in panels, color theory, and the language of sequential art."},
+
+  /* ════════════════════════════════════════════
+     ✦ NEW: FICTION
+     ════════════════════════════════════════════ */
+  {id:340,title:"The Hitchhiker's Guide to the Galaxy",author:"Douglas Adams",year:1979,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233400-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Hitchhiker+Guide+Galaxy&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Arthur Dent survives Earth's demolition and joins Ford Prefect in a hilariously absurd journey across the universe — a sci-fi comedy classic."},
+  {id:341,title:"The Alchemist",author:"Paulo Coelho",year:1988,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233401-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=The+Alchemist+Coelho&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A philosophical novel about Santiago, an Andalusian shepherd boy who dreams of treasure near the Egyptian pyramids and follows his Personal Legend."},
+  {id:342,title:"The Old Man and the Sea",author:"Ernest Hemingway",year:1952,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233402-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Old+Man+Sea+Hemingway&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A Pulitzer Prize-winning novella about an aging Cuban fisherman's struggle with a giant marlin. A meditation on determination and human dignity."},
+  {id:343,title:"To Kill a Mockingbird",author:"Harper Lee",year:1960,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233403-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=To+Kill+Mockingbird&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Through the eyes of Scout Finch, this Pulitzer Prize winner explores racial injustice and moral growth in the American Deep South during the 1930s."},
+  {id:344,title:"The Catcher in the Rye",author:"J.D. Salinger",year:1951,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233404-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Catcher+in+Rye&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Holden Caulfield's iconic first-person narrative explores teenage alienation, identity, and loss of innocence in 1950s New York."},
+  {id:345,title:"One Hundred Years of Solitude",author:"Gabriel García Márquez",year:1967,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233405-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Hundred+Years+Solitude&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"The magical realist masterpiece following seven generations of the Buendía family in the fictional town of Macondo. A Nobel Prize-winning landmark."},
+  {id:346,title:"Lord of the Flies",author:"William Golding",year:1954,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8233406-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Lord+of+Flies&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"British boys stranded on an uninhabited island descend into savagery. A haunting allegory about civilization, power, and human nature."},
+  {id:347,title:"The Picture of Dorian Gray",author:"Oscar Wilde",year:1890,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8739660-L.jpg",read:"https://www.gutenberg.org/ebooks/174",pdf:"https://www.gutenberg.org/ebooks/174.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/174.epub.images",source:"gutenberg",level:"all",desc:"A hedonistic young man sells his soul to remain forever young while his portrait absorbs his moral corruption. Wilde's only novel — a gothic masterpiece."},
+  {id:348,title:"Crime and Punishment",author:"Fyodor Dostoevsky",year:1866,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8739665-L.jpg",read:"https://www.gutenberg.org/ebooks/2554",pdf:"https://www.gutenberg.org/ebooks/2554.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/2554.epub.images",source:"gutenberg",level:"all",desc:"Raskolnikov, a destitute student in St. Petersburg, plans and executes a murder — then psychologically unravels. One of literature's greatest psychological novels."},
+  {id:349,title:"The Trial",author:"Franz Kafka",year:1925,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8739670-L.jpg",read:"https://www.gutenberg.org/ebooks/7849",pdf:"https://www.gutenberg.org/ebooks/7849.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/7849.epub.images",source:"gutenberg",level:"all",desc:"Josef K. is arrested and prosecuted by a mysterious court without ever being told his crime. Kafka's existential nightmare of bureaucratic absurdity."},
+  {id:350,title:"Don Quixote",author:"Miguel de Cervantes",year:1605,genre:"Fiction",cover:"https://covers.openlibrary.org/b/id/8739675-L.jpg",read:"https://www.gutenberg.org/ebooks/996",pdf:"https://www.gutenberg.org/ebooks/996.pdf.noimages",epub:"https://www.gutenberg.org/ebooks/996.epub.images",source:"gutenberg",level:"all",desc:"Often called the first modern novel. The idealistic knight Don Quixote and his squire Sancho Panza set off on absurd adventures in 17th-century Spain."},
+
+  /* ════════════════════════════════════════════
+     ✦ NEW: NON-FICTION
+     ════════════════════════════════════════════ */
+  {id:360,title:"A Brief History of Time",author:"Stephen Hawking",year:1988,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233600-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Brief+History+Time+Hawking&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Hawking's landmark popular science book explaining the universe from the Big Bang to black holes, quantum mechanics, and the nature of time for general readers."},
+  {id:361,title:"Sapiens: A Brief History of Humankind",author:"Yuval Noah Harari",year:2011,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233601-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Sapiens+History+Humankind&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A sweeping history of humankind from Stone Age foragers to modern civilization. Examines how biology, culture, empire, and capitalism shaped Homo sapiens."},
+  {id:362,title:"Thinking, Fast and Slow",author:"Daniel Kahneman",year:2011,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233602-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Thinking+Fast+Slow+Kahneman&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Nobel laureate Kahneman explores the two systems driving our thinking: fast, intuitive System 1 and slow, deliberate System 2, and the biases they produce."},
+  {id:363,title:"The Innovators",author:"Walter Isaacson",year:2014,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233603-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Innovators+Isaacson&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"The story of the people who created the computer and the internet. Traces collaborations between hackers, geniuses, and innovators from Ada Lovelace to Google."},
+  {id:364,title:"The Power of Now",author:"Eckhart Tolle",year:1997,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233604-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Power+of+Now+Tolle&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A guide to spiritual enlightenment emphasizing the importance of living in the present moment and separating identity from thoughts and emotions."},
+  {id:365,title:"Man's Search for Meaning",author:"Viktor E. Frankl",year:1946,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233605-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Mans+Search+Meaning+Frankl&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Holocaust survivor Viktor Frankl describes life in Nazi death camps and introduces logotherapy — the belief that the primary drive in human beings is the search for meaning."},
+  {id:366,title:"The Selfish Gene",author:"Richard Dawkins",year:1976,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233606-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Selfish+Gene+Dawkins&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Dawkins argues that genes — not organisms — are the fundamental units of natural selection. Introduces the meme concept and reshapes evolutionary theory."},
+  {id:367,title:"Guns, Germs, and Steel",author:"Jared Diamond",year:1997,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233607-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Guns+Germs+Steel+Diamond&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"A Pulitzer Prize winner explaining why Western civilizations came to dominate the world through the lens of geography, ecology, and available resources rather than racial superiority."},
+  {id:368,title:"The Lean Startup",author:"Eric Ries",year:2011,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233608-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Lean+Startup&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"Introduces the validated learning approach to startup building — build-measure-learn cycles, MVPs, and pivots that have influenced modern entrepreneurship globally."},
+  {id:369,title:"Zero to One",author:"Peter Thiel",year:2014,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/id/8233609-L.jpg",read:"https://www.gutenberg.org/ebooks/search/?query=Zero+to+One+Thiel&submit_search=Go%21",pdf:null,epub:null,source:"gutenberg",level:"all",desc:"PayPal co-founder Peter Thiel argues that true innovation is creating something genuinely new (0 to 1), not copying what works (1 to n). A startup manifesto."},
+
+];
+
+/* ─── GENRES ─── */
+const GENRES = [
+  "All",
+  "Electrical & Electronics","Civil Engineering","Mechanical Engineering",
+  "Arts & Crafts","Fiction","Non-Fiction",
+  "AI & Machine Learning","Deep Learning","Data Science","Cybersecurity","NLP & LLMs",
+  "Classic Literature","Adventure & Mystery","Science & Philosophy",
+  "Children & Fantasy","Biography & History","Poetry & Drama","Self-Help & Business"
+];
+let currentGenre = "All";
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function filtered(genre){
+  if(!genre||genre==="All") return BOOKS;
+  return BOOKS.filter(b=>b.genre===genre);
+}
+
+function srcInfo(s){
+  return {cls:"dot-gut",label:"Project Gutenberg"};
+}
+
+function getRibbonInfo(book){
+  return {cls:"r-gut", label:"GUTENBERG"};
+}
+
+function getLevelBadge(level){
+  if(!level||level==="all") return '';
+  const map = {beginner:'lv-beginner',intermediate:'lv-intermediate',advanced:'lv-advanced'};
+  return `<span class="level-tag ${map[level]||''}">${level.charAt(0).toUpperCase()+level.slice(1)}</span>`;
+}
+
+function makeCard(book, delay=0){
+  const s = srcInfo(book.source);
+  const r = getRibbonInfo(book);
+  return `<div class="book-card" style="animation-delay:${delay}ms" onclick="openDetail(${book.id})">
+    <span class="ribbon ${r.cls}">${r.label}</span>
+    ${book.cover
+      ? `<img class="book-cover" src="${esc(book.cover)}" alt="${esc(book.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'cover-ph\\'><i class=\\'fas fa-book\\'></i></div>'">`
+      : `<div class="cover-ph"><i class="fas fa-book"></i></div>`}
+    <div class="book-title">${esc(book.title)}</div>
+    <div class="book-author">${esc(book.author)}</div>
+    <div class="book-genre">${esc(book.genre)}</div>
+    <div class="src-pill"><span class="src-dot ${s.cls}"></span>${s.label}</div>
+    <div class="card-btns">
+      <a class="cb-read" href="${esc(book.read)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"><i class="fas fa-book-reader"></i>Read</a>
+    </div>
+  </div>`;
+}
+
+function renderHome(){
+  const rows = {
+    rowECE:      b=>b.genre==="Electrical & Electronics",
+    rowCivil:    b=>b.genre==="Civil Engineering",
+    rowMech:     b=>b.genre==="Mechanical Engineering",
+    rowArts:     b=>b.genre==="Arts & Crafts",
+    rowFiction:  b=>b.genre==="Fiction",
+    rowNonFiction:b=>b.genre==="Non-Fiction",
+    rowAI:       b=>b.genre==="AI & Machine Learning",
+    rowDL:       b=>b.genre==="Deep Learning",
+    rowDS:       b=>b.genre==="Data Science",
+    rowCyber:    b=>b.genre==="Cybersecurity",
+    rowNLP:      b=>b.genre==="NLP & LLMs",
+    rowClassic:  b=>b.genre==="Classic Literature",
+    rowScience:  b=>b.genre==="Science & Philosophy",
+    rowAdventure:b=>b.genre==="Adventure & Mystery",
+  };
+  Object.entries(rows).forEach(([rowId, filter])=>{
+    const el = document.getElementById(rowId);
+    if(el) el.innerHTML = BOOKS.filter(filter).slice(0,10).map((b,i)=>makeCard(b,i*40)).join('');
+  });
+}
+
+function renderGenreTabs(){
+  const tabs = document.getElementById('genreTabs');
+  tabs.innerHTML = GENRES.map(g=>{
+    const cnt = g==="All"?BOOKS.length:BOOKS.filter(b=>b.genre===g).length;
+    return `<button class="tab-btn${g===currentGenre?' active':''}" onclick="filterGenre('${g.replace(/'/g,"\\'")}')">${g}<span class="tab-count">${cnt}</span></button>`;
+  }).join('');
+}
+
+function filterGenre(genre){
+  currentGenre = genre;
+  showBrowse();
+}
+
+function showBrowse(){
+  setPage('pgBrowse');
+  setNavActive('navHome');
+  renderGenreTabs();
+  const books = filtered(currentGenre);
+  document.getElementById('browseTitle').textContent = currentGenre==="All"?"All Free Books":currentGenre;
+  document.getElementById('browseCount').textContent = `${books.length} books`;
+  document.getElementById('browseGrid').innerHTML = books.map((b,i)=>makeCard(b,Math.min(i*30,600))).join('');
+}
+
+function doSearch(){
+  const q = document.getElementById('searchQ').value.trim().toLowerCase();
+  const cat = document.getElementById('searchCat').value;
+  if(!q){ document.getElementById('searchQ').focus(); return; }
+  const results = BOOKS.filter(b=>{
+    if(cat==="Title")  return b.title.toLowerCase().includes(q);
+    if(cat==="Author") return b.author.toLowerCase().includes(q);
+    if(cat==="Genre")  return b.genre.toLowerCase().includes(q);
+    return b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q)||b.genre.toLowerCase().includes(q)||b.desc.toLowerCase().includes(q);
+  });
+  currentGenre = "All";
+  setPage('pgBrowse');
+  setNavActive('navHome');
+  document.getElementById('genreTabs').innerHTML = '';
+  document.getElementById('browseTitle').textContent = `Search: "${document.getElementById('searchQ').value.trim()}"`;
+  document.getElementById('browseCount').textContent = `${results.length} result${results.length!==1?'s':''}`;
+  document.getElementById('browseGrid').innerHTML = results.length
+    ? results.map((b,i)=>makeCard(b,Math.min(i*30,600))).join('')
+    : `<div class="not-found" style="grid-column:1/-1"><div class="nf-ico"><i class="fas fa-search"></i></div><h2>No results found</h2><p>Try a different keyword or browse all books.</p></div>`;
+}
+document.getElementById('searchQ').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+
+function openDetail(id){
+  const book = BOOKS.find(b=>b.id===id);
+  if(!book) return;
+  const s = srcInfo(book.source);
+  const coverHtml = book.cover
+    ? `<img class="detail-cover" src="${esc(book.cover)}" alt="${esc(book.title)}" onerror="this.outerHTML='<div class=\\'detail-cover-ph\\'><i class=\\'fas fa-book\\'></i></div>'">`
+    : `<div class="detail-cover-ph"><i class="fas fa-book"></i></div>`;
+  const levelBadge = getLevelBadge(book.level);
+  const meta = [
+    book.year ? `<span><i class="fas fa-calendar"></i> ${book.year>0?book.year:Math.abs(book.year)+' BCE'}</span>` : '',
+    `<span><i class="fas fa-tag"></i> ${book.genre}</span>`,
+    `<span><i class="fas fa-unlock-alt"></i> Free & Legal</span>`,
+    book.level&&book.level!=="all"?`<span><i class="fas fa-signal"></i> ${book.level.charAt(0).toUpperCase()+book.level.slice(1)}</span>`:''
+  ].filter(Boolean).join('');
+
+  const dlBtns = [
+    `<a class="dl-btn dl-read" href="${esc(book.read)}" target="_blank" rel="noopener noreferrer"><i class="fas fa-book-reader"></i> Read Online</a>`,
+    book.source==='gutenberg' ? `<a class="dl-btn dl-html" href="https://www.gutenberg.org/ebooks/${book.read.split('/').pop()}" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> Gutenberg Page</a>` : '',
+    book.source==='archive'   ? `<a class="dl-btn dl-mobi" href="${esc(book.read)}" target="_blank" rel="noopener noreferrer"><i class="fas fa-tablet-alt"></i> Archive Page</a>` : '',
+  ].filter(Boolean).join('');
+
+  document.getElementById('detContent').innerHTML = `
+    <div class="detail-head">
+      ${coverHtml}
+      <div class="detail-info">
+        <h2>${esc(book.title)}${levelBadge}</h2>
+        <div class="det-author">by ${esc(book.author)}</div>
+        <div class="detail-meta">${meta}</div>
+        <div class="src-pill" style="margin-top:.6rem"><span class="src-dot ${s.cls}"></span>${s.label}</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <p style="color:#555;font-size:.9rem;line-height:1.7;margin-bottom:1.25rem">${esc(book.desc)}</p>
+      <div class="dl-head"><i class="fas fa-download"></i> Free Access Options</div>
+      <div class="dl-grid">${dlBtns}</div>
+      <div class="note-box"><i class="fas fa-info-circle"></i>
+        <span>This book is <strong>100% free and legal</strong> to read on <strong>Project Gutenberg</strong>. Click any button to open the book on gutenberg.org.</span>
+      </div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){ document.getElementById('detailOverlay').classList.remove('open'); }
+
+function setPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function setNavActive(id){
+  document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
+  if(id) document.getElementById(id)?.classList.add('active');
+}
+function goHome(){
+  setPage('pgHome');
+  setNavActive('navHome');
+  document.getElementById('searchQ').value='';
+}
+
+function updateAuth(){
+  const ok = localStorage.getItem('lms_login')==='1';
+  const name = localStorage.getItem('lms_name')||'User';
+  document.getElementById('wlcUser').textContent = ok ? `Welcome, ${name}` : '';
+  document.getElementById('btnLogin').style.display  = ok?'none':'';
+  document.getElementById('btnSignup').style.display = ok?'none':'';
+  document.getElementById('btnLogout').style.display = ok?'':'none';
+}
+function doLogout(){
+  localStorage.removeItem('lms_login');
+  localStorage.removeItem('lms_name');
+  localStorage.removeItem('lms_user');
+  updateAuth();
+  goHome();
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDetail(); });
+
+updateAuth();
+renderHome();
+</script>
+</body>
+</html>
