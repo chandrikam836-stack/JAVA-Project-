@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Management System – Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2c3e50;--accent:#3498db;--success:#2ecc71;
+  --danger:#e74c3c;--gold:#f39c12;--purple:#8e44ad;
+  --bg:#f4f6f9;--card:#fff;--shadow:0 4px 16px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#333;min-height:100vh}
+
+/* NAV */
+header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+nav{display:flex;justify-content:space-between;align-items:center;padding:.85rem 2rem;max-width:1300px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--primary);cursor:pointer;white-space:nowrap;text-decoration:none}
+.menu{display:flex;list-style:none;gap:1.2rem}
+.menu a{text-decoration:none;color:#555;font-weight:500;font-size:.9rem;transition:color .2s}
+.menu a:hover,.menu a.active{color:var(--accent)}
+.search-wrap{display:flex;flex:1;max-width:420px}
+.search-wrap select{padding:.48rem .7rem;border:1px solid #ddd;border-right:none;border-radius:6px 0 0 6px;background:#f8f8f8;font-size:.85rem;cursor:pointer}
+.search-wrap input{flex:1;padding:.48rem .75rem;border:1px solid #ddd;font-size:.88rem;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap button{padding:.48rem .85rem;background:var(--accent);border:none;border-radius:0 6px 6px 0;color:#fff;cursor:pointer;transition:background .2s}
+.search-wrap button:hover{background:#2382c4}
+.auth-btns{display:flex;align-items:center;gap:.4rem}
+.auth-btns button{padding:.4rem .9rem;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:500;font-family:inherit;transition:opacity .2s}
+.btn-signup{background:var(--success);color:#fff}
+
+/* PAGE LAYOUT */
+main{max-width:1300px;margin:0 auto;padding:2rem;display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 64px)}
+
+/* LOGIN BOX */
+.login-box{
+  background:#fff;border-radius:14px;max-width:400px;width:100%;
+  padding:2.5rem;box-shadow:0 12px 40px rgba(0,0,0,.13);
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.login-box .brand{
+  display:flex;align-items:center;gap:.5rem;
+  font-family:'Playfair Display',serif;font-size:1.1rem;
+  font-weight:700;color:var(--primary);margin-bottom:1.5rem;
+}
+.login-box h2{font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--primary);margin-bottom:.3rem}
+.login-box .sub{color:#888;font-size:.87rem;margin-bottom:1.75rem}
+
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.87rem;font-weight:500;color:#444;margin-bottom:.3rem}
+.fg input{
+  width:100%;padding:.6rem .9rem;border:1.5px solid #e0e5ec;border-radius:8px;
+  font-family:inherit;font-size:.9rem;outline:none;
+  transition:border-color .2s,box-shadow .2s;background:#fafbfc;color:#333
+}
+.fg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(52,152,219,.12);background:#fff}
+.ferr{color:var(--danger);font-size:.78rem;margin-top:.25rem;display:none}
+
+.sub-btn{
+  width:100%;padding:.68rem;background:var(--accent);color:#fff;border:none;
+  border-radius:8px;font-size:.95rem;font-family:inherit;font-weight:600;
+  cursor:pointer;margin-top:.25rem;transition:background .2s,transform .1s
+}
+.sub-btn:hover{background:#2382c4}
+.sub-btn:active{transform:scale(.99)}
+
+.footer-text{text-align:center;margin-top:1.2rem;font-size:.87rem;color:#888}
+.footer-text a{color:var(--accent);text-decoration:none;font-weight:500}
+.footer-text a:hover{text-decoration:underline}
+
+.divider{display:flex;align-items:center;gap:.75rem;margin:1.25rem 0;color:#ccc;font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#eee}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+<nav>
+  <a class="logo" href="Home.html">📚 Library Management System</a>
+  <ul class="menu">
+    <li><a href="Home.html">Home</a></li>
+    
+  </ul>
+  <div class="search-wrap">
+    <select id="searchCat">
+      <option>All</option><option>Title</option><option>Author</option><option>Genre</option>
+    </select>
+    <input type="text" id="searchQ" placeholder="Search books …">
+    <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+  </div>
+  <div class="auth-btns">
+    <button class="btn-signup" onclick="window.location.href='register (2).html'">Sign Up</button>
+  </div>
+</nav>
+</header>
+
+<main>
+  <div class="login-box">
+    <div class="brand">📚 LibraryMS</div>
+    <h2>Welcome Back</h2>
+    <p class="sub">Sign in to access your personal library</p>
+
+    <div class="fg">
+      <label for="inName">Name</label>
+      <input type="text" id="inName" placeholder="Your name" autocomplete="name">
+      <div class="ferr" id="errName">Please enter your name.</div>
+    </div>
+
+    <div class="fg">
+      <label for="inPwd">Password</label>
+      <input type="password" id="inPwd" placeholder="Password" autocomplete="current-password">
+      <div class="ferr" id="errPwd">Please enter your password.</div>
+    </div>
+
+    <button class="sub-btn" onclick="doLogin()">
+      <i class="fas fa-sign-in-alt"></i> Login / Sign In
+    </button>
+
+    <div class="divider">or</div>
+
+    <p class="footer-text">
+      Don't have an account? <a href="register (2).html">Sign up free</a>
+    </p>
+  </div>
+</main>
+
+<script>
+function doLogin(){
+  const n = document.getElementById('inName').value.trim();
+  const p = document.getElementById('inPwd').value.trim();
+  document.getElementById('errName').style.display = n ? 'none' : 'block';
+  document.getElementById('errPwd').style.display  = p ? 'none' : 'block';
+  if(!n || !p) return;
+  localStorage.setItem('lms_login','1');
+  localStorage.setItem('lms_name', n);
+  window.location.href = 'Home.html';
+}
+
+function doSearch(){
+  const q = document.getElementById('searchQ').value.trim();
+  const cat = document.getElementById('searchCat').value;
+  if(!q){ document.getElementById('searchQ').focus(); return; }
+  window.location.href = `search.html?q=${encodeURIComponent(q)}&cat=${encodeURIComponent(cat)}`;
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter') doLogin();
+});
+document.getElementById('searchQ').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>
