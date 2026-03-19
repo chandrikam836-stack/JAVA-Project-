@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Management System – Home</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2c3e50;--accent:#3498db;--success:#2ecc71;
+  --danger:#e74c3c;--gold:#f39c12;--purple:#8e44ad;
+  --bg:#f8f9fb;--card:#fff;--shadow:0 4px 16px rgba(250, 246, 246, 0.09);
+  --teal:#16a085;--orange:#e67e22;--brown:#7d4f1e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#333;min-height:100vh}
+
+header{background:#021835;box-shadow:0 2px 8px #f6f4f414;position:sticky;top:0;z-index:100}
+nav{display:flex;justify-content:space-between;align-items:center;padding:.85rem 2rem;max-width:1300px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:white;cursor:pointer;white-space:nowrap;text-decoration:none}
+.menu{display:flex;list-style:none;gap:1.2rem}
+.menu a{text-decoration:none;color:#f8f6f6;font-weight:500;font-size:.9rem;transition:color .2s}
+.menu a:hover,.menu a.active{color:var(--accent)}
+.search-wrap{display:flex;flex:1;max-width:420px}
+.search-wrap input{flex:1;padding:.48rem .75rem;border:1px solid #ddd;font-size:.88rem;outline:none;transition:border-color .2s;border-radius:6px 0 0 6px}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap button{padding:.48rem .85rem;background:var(--accent);border:none;border-radius:0 6px 6px 0;color:#fff;cursor:pointer;transition:background .2s}
+.search-wrap button:hover{background:#2382c4}
+.auth-btns{display:flex;align-items:center;gap:.4rem}
+.auth-btns span{font-weight:500;color:white;font-size:.88rem;white-space:nowrap}
+.auth-btns button{padding:.4rem .9rem;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:500;font-family:inherit;transition:opacity .2s}
+.btn-login{background:var(--accent);color:#fff}
+.btn-signup{background:var(--success);color:#fff}
+.btn-logout{background:var(--danger);color:#fff}
+
+main{max-width:1300px;margin:0 auto;padding:2rem}
+.page{display:none}.page.active{display:block}
+
+.tabs{display:flex;gap:.5rem;margin-bottom:1.75rem;flex-wrap:wrap;align-items:center}
+.tab-btn{padding:.45rem 1.1rem;border:2px solid #dde1e7;border-radius:25px;background:#fff;
+  cursor:pointer;font-size:.85rem;font-weight:500;color:#666;transition:all .2s;font-family:inherit}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-btn:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+.tab-count{background:rgba(0,0,0,.12);color:inherit;font-size:.72rem;padding:.1rem .4rem;border-radius:10px;margin-left:.3rem}
+
+.banner{border-radius:14px;overflow:hidden;position:relative;height:300px;margin-bottom:2.5rem;box-shadow:var(--shadow)}
+.banner img{width:100%;height:100%;object-fit:cover}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(44,62,80,.78),rgba(44,62,80,.15));
+  display:flex;flex-direction:column;justify-content:center;padding:2.5rem 3rem}
+.banner-overlay h1{font-family:'Playfair Display',serif;font-size:2.1rem;color:#fff;margin-bottom:.6rem;animation:fadeInLeft .6s ease both}
+.banner-overlay p{color:rgba(255,255,255,.88);max-width:480px;margin-bottom:1rem;animation:fadeInLeft .6s .15s ease both}
+.badge-row{display:flex;gap:.5rem;flex-wrap:wrap;animation:fadeInLeft .6s .3s ease both}
+@keyframes fadeInLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .75rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(46,204,113,.9);color:#fff}
+.badge-purple{background:rgba(142,68,173,.9);color:#fff}
+.badge-orange{background:rgba(230,126,34,.9);color:#fff}
+.badge-red{background:rgba(231,76,60,.9);color:#fff}
+.badge-teal{background:rgba(22,160,133,.9);color:#fff}
+.badge-brown{background:rgba(130,80,30,.9);color:#fff}
+.badge-blue{background:rgba(52,152,219,.9);color:#fff}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.sec-head h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary)}
+.see-all{color:var(--accent);font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:none;padding:0}
+.see-all:hover{text-decoration:underline}
+
+.book-row{display:flex;gap:1.1rem;overflow-x:auto;padding-bottom:.75rem;scroll-snap-type:x mandatory}
+.book-row::-webkit-scrollbar{height:5px}
+.book-row::-webkit-scrollbar-track{background:#eee;border-radius:3px}
+.book-row::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1.25rem}
+
+.book-card{background:#fff;border-radius:10px;box-shadow:var(--shadow);padding:.9rem;text-align:center;
+  position:relative;transition:transform .2s,box-shadow .2s;cursor:pointer;min-width:175px;flex-shrink:0;
+  scroll-snap-align:start;animation:fadeUp .35s ease both;display:flex;flex-direction:column}
+.book-card:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.book-cover{width:100%;height:220px;object-fit:cover;border-radius:7px;margin-bottom:.7rem;background:#e8ecf0}
+.cover-ph{width:100%;height:220px;border-radius:7px;margin-bottom:.7rem;
+  background:linear-gradient(135deg,#dde3ea,#c8d1db);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:#9aaabb}
+.book-title{font-weight:600;font-size:.88rem;color:var(--primary);margin-bottom:.2rem;line-height:1.3}
+.book-author{color:#888;font-size:.8rem;margin-bottom:.4rem}
+.book-genre{font-size:.73rem;color:#aaa;margin-bottom:.6rem}
+
+/* source ribbon colours */
+.ribbon{position:absolute;top:8px;left:8px;font-size:.65rem;font-weight:700;padding:.18rem .5rem;border-radius:4px;letter-spacing:.4px;color:#fff;z-index:2}
+.r-gutenberg{background:#8e44ad}
+.r-mit{background:#c0392b}
+.r-arxiv{background:#b7410e}
+.r-openlibrary{background:#2980b9}
+.r-authorpdf{background:#16a085}
+.r-cambridge{background:#1a5276}
+.r-springer{background:#e67e22}
+.r-htmlbook{background:#27ae60}
+.r-github{background:#2c3e50}
+
+/* source pill */
+.src-pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;color:#777;margin-bottom:.4rem;flex-wrap:wrap;justify-content:center}
+.src-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-gutenberg{background:#8e44ad}.dot-mit{background:#c0392b}.dot-arxiv{background:#b7410e}
+.dot-openlibrary{background:#2980b9}.dot-authorpdf{background:#16a085}.dot-cambridge{background:#1a5276}
+.dot-springer{background:#e67e22}.dot-htmlbook{background:#27ae60}.dot-github{background:#2c3e50}
+
+.card-btns{display:flex;gap:.35rem;margin-top:auto;padding-top:.5rem}
+.card-btns a{flex:1;padding:.38rem .2rem;border:none;border-radius:5px;font-size:.76rem;font-weight:600;
+  font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.25rem;text-decoration:none;transition:opacity .2s}
+.card-btns a:hover{opacity:.83}
+.cb-read{background:var(--success);color:#fff}
+
+.back-lnk{display:inline-flex;align-items:center;gap:.4rem;color:var(--accent);font-weight:500;font-size:.88rem;
+  margin-bottom:1.25rem;cursor:pointer;border:none;background:none;font-family:inherit}
+.back-lnk:hover{text-decoration:underline}
+
+.not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;text-align:center;gap:1rem}
+.not-found .nf-ico{font-size:4rem;color:#c8d0da}
+.not-found h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary)}
+.not-found p{color:#888;max-width:340px}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;justify-content:center;align-items:center;padding:1rem}
+.overlay.open{display:flex}
+.detail-box{background:#fff;border-radius:16px;max-width:660px;width:100%;max-height:90vh;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;animation:slideUp .25s ease;box-shadow:0 16px 48px rgba(0,0,0,.28)}
+@keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.detail-head{background:linear-gradient(135deg,#2c3e50,#34495e);padding:1.75rem;display:flex;gap:1.4rem;color:#fff;align-items:flex-start;flex-shrink:0}
+.detail-cover{width:105px;height:155px;object-fit:cover;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.45);flex-shrink:0}
+.detail-cover-ph{width:105px;height:155px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:3rem;flex-shrink:0}
+.detail-info h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.3rem;line-height:1.3}
+.detail-meta span{display:inline-block;background:rgba(255,255,255,.15);font-size:.75rem;padding:.2rem .55rem;border-radius:20px;margin:.15rem .15rem .15rem 0}
+.det-author{color:rgba(255,255,255,.8);margin-bottom:.5rem;font-size:.92rem}
+.detail-body{padding:1.5rem;overflow-y:auto;flex:1}
+.dl-head{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--primary);margin-bottom:.85rem}
+.dl-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.dl-btn{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem 1rem;border:none;border-radius:7px;
+  cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;text-decoration:none;transition:opacity .2s,transform .1s;color:#fff}
+.dl-btn:hover{opacity:.85;transform:translateY(-1px)}
+.note-box{background:#f0f4f8;border-radius:8px;padding:.7rem 1rem;font-size:.81rem;color:#555;display:flex;gap:.5rem;align-items:flex-start}
+.note-box i{color:var(--accent);margin-top:2px;flex-shrink:0}
+.det-close{position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s}
+.det-close:hover{background:rgba(255,255,255,.35)}
+.level-tag{display:inline-block;font-size:.7rem;padding:.15rem .5rem;border-radius:4px;font-weight:700;margin-left:.4rem;vertical-align:middle}
+.lv-beginner{background:#d5f5e3;color:#1e8449}
+.lv-intermediate{background:#d6eaf8;color:#1a5276}
+.lv-advanced{background:#fde8e8;color:#922b21}
+
+/* source legend colours for detail btn */
+.src-gutenberg{background:#8e44ad}
+.src-mit{background:#c0392b}
+.src-arxiv{background:#b7410e}
+.src-openlibrary{background:#2980b9}
+.src-authorpdf{background:#16a085}
+.src-cambridge{background:#1a5276}
+.src-springer{background:#e67e22}
+.src-htmlbook{background:#27ae60}
+.src-github{background:#2c3e50}
+
+@media(max-width:768px){
+  nav{flex-direction:column;padding:.75rem}
+  .search-wrap{max-width:100%;width:100%}
+  .banner{height:210px}.banner-overlay{padding:1.25rem 1.5rem}
+  .banner-overlay h1{font-size:1.4rem}
+  .books-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:1rem}
+  .book-row .book-card{min-width:155px}
+  .detail-head{flex-direction:column;align-items:center;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<header>
+<nav>
+  <a class="logo" href="hom.html">📚 Library Management System</a>
+  <ul class="menu"><li><a href="hom.html" id="navHome" class="active">Home</a></li></ul>
+  <div class="search-wrap">
+    <input type="text" id="searchQ" placeholder="Search books by title, author, genre...">
+    <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+  </div>
+  <div class="auth-btns">
+    <span id="wlcUser"></span>
+    <button class="btn-login"  id="btnLogin"  onclick="window.location.href='Login_jp.html'">Login</button>
+    <button class="btn-signup" id="btnSignup" onclick="window.location.href='register (2).html'">Sign Up</button>
+    <button class="btn-logout" id="btnLogout" style="display:none" onclick="doLogout()">Logout</button>
+  </div>
+</nav>
+</header>
+
+<main>
+<!-- HOME PAGE -->
+<div class="page active" id="pgHome">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&auto=format&fit=crop&q=80" alt="Library">
+    <div class="banner-overlay">
+      <h1>Your Free Digital Library</h1>
+      <p>Explore 100+ books from verified free sources — Project Gutenberg, MIT Press, arXiv, author PDFs &amp; more. 100% free &amp; legal.</p>
+      <div class="badge-row">
+        <span class="badge badge-green"><i class="fas fa-unlock-alt"></i> Always Free</span>
+        <span class="badge badge-purple"><i class="fas fa-book"></i> Gutenberg Classics</span>
+        <span class="badge badge-red"><i class="fas fa-university"></i> MIT Press</span>
+        <span class="badge badge-orange"><i class="fas fa-robot"></i> AI/ML Books</span>
+        <span class="badge badge-teal"><i class="fas fa-cogs"></i> Engineering</span>
+        <span class="badge badge-blue"><i class="fas fa-file-alt"></i> arXiv Papers</span>
+      </div>
+    </div>
+  </div>
+  <div class="sec-head"><h2>🤖 AI &amp; Machine Learning</h2><button class="see-all" onclick="filterGenre('AI & Machine Learning')">See all →</button></div>
+  <div class="book-row" id="rowAI"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>⚡ Electrical &amp; Electronics (ECE)</h2><button class="see-all" onclick="filterGenre('Electrical & Electronics')">See all →</button></div>
+  <div class="book-row" id="rowECE"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🏗️ Civil Engineering</h2><button class="see-all" onclick="filterGenre('Civil Engineering')">See all →</button></div>
+  <div class="book-row" id="rowCivil"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>📐 Engineering Mathematics</h2><button class="see-all" onclick="filterGenre('Engineering Mathematics')">See all →</button></div>
+  <div class="book-row" id="rowMath"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🌍 Fiction</h2><button class="see-all" onclick="filterGenre('Fiction')">See all →</button></div>
+  <div class="book-row" id="rowFiction"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>📚 Non-Fiction</h2><button class="see-all" onclick="filterGenre('Non-Fiction')">See all →</button></div>
+  <div class="book-row" id="rowNonFiction"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>📖 Classic Literature</h2><button class="see-all" onclick="filterGenre('Classic Literature')">See all →</button></div>
+  <div class="book-row" id="rowClassic"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🔬 Science &amp; Philosophy</h2><button class="see-all" onclick="filterGenre('Science & Philosophy')">See all →</button></div>
+  <div class="book-row" id="rowScience"></div>
+
+  <div class="sec-head" style="margin-top:2rem"><h2>🗺️ Adventure &amp; Mystery</h2><button class="see-all" onclick="filterGenre('Adventure & Mystery')">See all →</button></div>
+  <div class="book-row" id="rowAdventure"></div>
+</div>
+
+<!-- BROWSE PAGE -->
+<div class="page" id="pgBrowse">
+  <button class="back-lnk" onclick="goHome()"><i class="fas fa-arrow-left"></i> Back to Home</button>
+  <div class="sec-head"><h2 id="browseTitle">All Free Books</h2><span id="browseCount" style="color:#888;font-size:.88rem"></span></div>
+  <div class="tabs" id="genreTabs"></div>
+  <div class="books-grid" id="browseGrid"></div>
+</div>
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-box">
+    <button class="det-close" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+    <div id="detContent"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SOURCE DEFINITIONS
+   Each book has a `source` key that maps to a label + colour
+   ═══════════════════════════════════════════════════════════ */
+const SOURCES = {
+  gutenberg:   { label:"Project Gutenberg",  ribbon:"r-gutenberg",  dot:"dot-gutenberg",  btn:"src-gutenberg",  icon:"fa-book" },
+  mit:         { label:"MIT Press Open",     ribbon:"r-mit",        dot:"dot-mit",        btn:"src-mit",        icon:"fa-university" },
+  arxiv:       { label:"arXiv",              ribbon:"r-arxiv",      dot:"dot-arxiv",      btn:"src-arxiv",      icon:"fa-file-alt" },
+  openlibrary: { label:"Open Library",       ribbon:"r-openlibrary",dot:"dot-openlibrary",btn:"src-openlibrary",icon:"fa-globe" },
+  authorpdf:   { label:"Author Free PDF",    ribbon:"r-authorpdf",  dot:"dot-authorpdf",  btn:"src-authorpdf",  icon:"fa-file-pdf" },
+  cambridge:   { label:"Cambridge Open",     ribbon:"r-cambridge",  dot:"dot-cambridge",  btn:"src-cambridge",  icon:"fa-graduation-cap" },
+  springer:    { label:"Springer Open",      ribbon:"r-springer",   dot:"dot-springer",   btn:"src-springer",   icon:"fa-leaf" },
+  htmlbook:    { label:"Free HTML Book",     ribbon:"r-htmlbook",   dot:"dot-htmlbook",   btn:"src-htmlbook",   icon:"fa-code" },
+  github:      { label:"GitHub / Free PDF",  ribbon:"r-github",     dot:"dot-github",     btn:"src-github",     icon:"fa-github fab" },
+};
+
+/* ═══════════════════════════════════════════════════════════
+   BOOKS DATABASE  — every `read` URL is a verified free legal source
+   ═══════════════════════════════════════════════════════════ */
+const BOOKS = [
+
+  /* ── CLASSIC LITERATURE  (all on Project Gutenberg — confirmed IDs) ── */
+  {id:1,  title:"Pride and Prejudice",       author:"Jane Austen",         year:1813,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL66554W-L.jpg",   read:"https://www.gutenberg.org/ebooks/1342",  source:"gutenberg",level:"all",  desc:"A witty romantic novel following Elizabeth Bennet as she deals with issues of manners, upbringing, morality, education, and marriage in Regency England."},
+  {id:2,  title:"Sense and Sensibility",     author:"Jane Austen",         year:1811,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL66555W-L.jpg",   read:"https://www.gutenberg.org/ebooks/161",   source:"gutenberg",level:"all",  desc:"The story of the Dashwood sisters, Elinor and Marianne, as they navigate love and heartbreak in Georgian England."},
+  {id:3,  title:"Emma",                      author:"Jane Austen",         year:1815,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL66553W-L.jpg",   read:"https://www.gutenberg.org/ebooks/158",   source:"gutenberg",level:"all",  desc:"A novel about youthful hubris and romantic misunderstandings set in 18th-century England."},
+  {id:5,  title:"Animal Farm",               author:"George Orwell",       year:1945,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL1168007W-L.jpg",   read:"https://www.gutenberg.org/ebooks/5765",  source:"gutenberg",level:"all",  desc:"An allegorical novella reflecting events leading up to the Russian Revolution and the Stalinist era."},
+  {id:6,  title:"The Great Gatsby",          author:"F. Scott Fitzgerald", year:1925,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL468431W-L.jpg",   read:"https://www.gutenberg.org/ebooks/64317", source:"gutenberg",level:"all",  desc:"A novel of the Jazz Age exploring themes of decadence, idealism, and excess in 1920s America."},
+  {id:8,  title:"Frankenstein",              author:"Mary Shelley",        year:1818,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL47169580W-L.jpg",   read:"https://www.gutenberg.org/ebooks/84",    source:"gutenberg",level:"all",  desc:"A Gothic novel about the young scientist Victor Frankenstein and the creature he creates — and cannot control."},
+  {id:9,  title:"Dracula",                   author:"Bram Stoker",         year:1897,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL80551W-L.jpg",   read:"https://www.gutenberg.org/ebooks/345",   source:"gutenberg",level:"all",  desc:"The quintessential vampire novel introducing Count Dracula in an epistolary Gothic horror masterpiece."},
+  {id:10, title:"Wuthering Heights",         author:"Emily Brontë",        year:1847,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL52645W-L.jpg",   read:"https://www.gutenberg.org/ebooks/768",   source:"gutenberg",level:"all",  desc:"A dark, romantic novel about the passionate and destructive relationship between Heathcliff and Catherine Earnshaw."},
+  {id:11, title:"Jane Eyre",                 author:"Charlotte Brontë",    year:1847,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL52693W-L.jpg",   read:"https://www.gutenberg.org/ebooks/1260",  source:"gutenberg",level:"all",  desc:"The story of an orphaned girl who grows into an independent young woman, facing hardship, love, and moral dilemmas."},
+  {id:12, title:"The Picture of Dorian Gray",author:"Oscar Wilde",         year:1890,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL162549W-L.jpg",   read:"https://www.gutenberg.org/ebooks/174",   source:"gutenberg",level:"all",  desc:"A hedonistic young man sells his soul to remain forever young while his portrait absorbs his moral corruption."},
+
+  /* ── ADVENTURE & MYSTERY  (all Gutenberg) ── */
+  {id:30, title:"The Adventures of Sherlock Holmes",      author:"Arthur Conan Doyle",    year:1892,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL262421W-L.jpg",read:"https://www.gutenberg.org/ebooks/1661",  source:"gutenberg",level:"all",desc:"Twelve stories featuring the brilliant detective Sherlock Holmes and his companion Dr. Watson solving baffling cases."},
+  {id:31, title:"The Hound of the Baskervilles",          author:"Arthur Conan Doyle",    year:1902,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL262426W-L.jpg",read:"https://www.gutenberg.org/ebooks/2852",  source:"gutenberg",level:"all",desc:"Holmes investigates the legend of a supernatural hound that has been stalking the Baskerville family for generations."},
+  {id:32, title:"Treasure Island",                        author:"Robert Louis Stevenson",year:1883,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL83413W-L.jpg",read:"https://www.gutenberg.org/ebooks/120",   source:"gutenberg",level:"all",desc:"Jim Hawkins embarks on a swashbuckling adventure to find buried pirate treasure, facing Long John Silver along the way."},
+  {id:33, title:"Robinson Crusoe",                        author:"Daniel Defoe",          year:1719,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL74659W-L.jpg",read:"https://www.gutenberg.org/ebooks/521",   source:"gutenberg",level:"all",desc:"The classic survival story of a man shipwrecked on a remote tropical island for 28 years."},
+  {id:34, title:"Around the World in Eighty Days",        author:"Jules Verne",           year:1872,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL52680W-L.jpg",read:"https://www.gutenberg.org/ebooks/103",   source:"gutenberg",level:"all",desc:"Phileas Fogg bets that he can circumnavigate the entire globe in just 80 days."},
+  {id:35, title:"Twenty Thousand Leagues Under the Sea",  author:"Jules Verne",           year:1870,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL52681W-L.jpg",read:"https://www.gutenberg.org/ebooks/164",   source:"gutenberg",level:"all",desc:"Professor Aronnax's extraordinary voyage aboard the submarine Nautilus with the enigmatic Captain Nemo."},
+
+  /* ── SCIENCE & PHILOSOPHY  (all Gutenberg) ── */
+  {id:50, title:"On the Origin of Species",  author:"Charles Darwin",       year:1859,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL193510W-L.jpg",read:"https://www.gutenberg.org/ebooks/1228",  source:"gutenberg",level:"all",desc:"Darwin's seminal work introducing the scientific theory of evolution by natural selection — one of the most influential books ever written."},
+  {id:51, title:"The Republic",              author:"Plato",                year:-380,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL10288598W-L.jpg",read:"https://www.gutenberg.org/ebooks/1497",  source:"gutenberg",level:"all",desc:"Plato's Socratic dialogue on justice, the ideal city-state, the philosopher-king, and the nature of the just man."},
+  {id:52, title:"The Prince",                author:"Niccolò Machiavelli",  year:1532,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL166894W-L.jpg",read:"https://www.gutenberg.org/ebooks/1232",  source:"gutenberg",level:"all",desc:"A political treatise on how rulers can acquire and maintain political power — still controversial after 500 years."},
+  {id:53, title:"Meditations",               author:"Marcus Aurelius",      year:180, genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL168483W-L.jpg",read:"https://www.gutenberg.org/ebooks/2680",  source:"gutenberg",level:"all",desc:"Personal writings by the Roman Emperor reflecting on Stoic philosophy, duty, resilience, and self-improvement."},
+  {id:54, title:"The Art of War",            author:"Sun Tzu",              year:-500,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL8422932W-L.jpg",read:"https://www.gutenberg.org/ebooks/132",   source:"gutenberg",level:"all",desc:"An ancient Chinese military treatise whose wisdom on strategy is still studied in business, sports, and martial arts."},
+  {id:55, title:"Relativity",                author:"Albert Einstein",      year:1916,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL584840W-L.jpg",read:"https://www.gutenberg.org/ebooks/5001",  source:"gutenberg",level:"all",desc:"Einstein's own accessible explanation of his groundbreaking special and general theories of relativity for the general reader."},
+
+  
+
+  /* ══════════════════════════════════════════════
+     AI & MACHINE LEARNING
+     All are officially free from authors / publishers
+  ══════════════════════════════════════════════ */
+                                                      
+  
+  {id:204,title:"Interpretable Machine Learning",            author:"Christoph Molnar",             year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781492049005-L.jpg",read:"https://christophm.github.io/interpretable-ml-book/",                                                                                          source:"htmlbook",   level:"intermediate",desc:"A practical guide to making black-box ML models interpretable. Covers SHAP, LIME, partial dependence plots, and fairness metrics. Freely readable online."},
+  {id:206,title:"A Brief Intro to ML for Engineers",         author:"Osvaldo Simeone",              year:2018,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781461471370-L.jpg",read:"https://arxiv.org/abs/1709.02840",                                                                                                              source:"arxiv",      level:"beginner",    desc:"A compact mathematically grounded introduction for engineers: supervised, unsupervised, and Bayesian approaches. Free on arXiv."},
+  {id:207,title:"Programming Computer Vision with Python",   author:"Jan Erik Solem",               year:2012,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781449316549-L.jpg",read:"http://programmingcomputervision.com/",                                                                                                              source:"authorpdf",  level:"intermediate",desc:"A hands-on guide to building computer vision applications in Python. Covers image processing, feature detection, 3D reconstruction, and machine learning for visual data. Free PDF from the author."},
+  {id:208,title:"Data Science for Business",                 author:"Provost & Fawcett",            year:2013,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781449361327-L.jpg",read:"https://www.researchgate.net/publication/256438799_Data_Science_for_Business",                                                                         source:"authorpdf",  level:"intermediate",desc:"A 28-page accessible introduction to data science concepts and their business applications. Covers data-analytic thinking, predictive modeling, and practical frameworks for decision-making."},
+  {id:209,title:"Data Mining Algorithms In R",               author:"Wikibooks Contributors",       year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781782162742-L.jpg",read:"https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R",                                                                                          source:"htmlbook",   level:"intermediate",desc:"A free, community-written Wikibook covering key data mining algorithms implemented in R — clustering, classification, association rules, and regression with practical examples."},
+  {id:210,title:"Statistical Learning for Scientific Data Processing",author:"Gaël Varoquaux",    year:2015,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780596517427-L.jpg",read:"http://gael-varoquaux.info/scikit-learn-tutorial/",                                                                                                    source:"htmlbook",   level:"beginner",    desc:"A comprehensive scikit-learn tutorial for scientific data processing — covering supervised and unsupervised learning, model selection, and pipelines with worked examples. Free online."},
+  {id:211,title:"Explanatory Model Analysis",                author:"Przemyslaw Biecek & Tomasz Burzykowski",year:2021,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781000580556-L.jpg",read:"https://ema.drwhy.ai/",                                                                                                              source:"htmlbook",   level:"intermediate",desc:"A practical guide to model exploration, explanation, and debugging. Covers instance-level and dataset-level explanations, SHAP, LIME, and residual diagnostics. Freely readable online."},
+  {id:212,title:"Practical Deep Learning for Coders",        author:"Jeremy Howard & Sylvain Gugger (fast.ai)",year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781492045526-L.jpg",read:"https://course.fast.ai/Resources/book.html",                                                                                          source:"htmlbook",   level:"beginner",    desc:"The popular fast.ai book teaching deep learning top-down with real projects. Covers CNNs, NLP, tabular data, and deployment. Code-first approach with PyTorch. Free online."},
+  {id:213,title:"Physics-based Deep Learning",               author:"Thuerey et al.",               year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9783031358708-L.jpg",read:"https://physicsbaseddeeplearning.org/intro.html",                                                                                                    source:"htmlbook",   level:"advanced",    desc:"An open textbook on integrating physical simulations with deep learning — covering differentiable physics, neural ODEs, inverse problems, and scientific machine learning. Free online."},
+{id:203,title:"Probabilistic Machine Learning: Intro",     author:"Kevin P. Murphy",              year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780262046824-L.jpg",read:"https://probml.github.io/pml-book/book1.html",                                                                                                source:"mit",        level:"advanced",    desc:"Two-volume MIT Press series covering probabilistic ML fundamentals through diffusion models. Free draft from the author."},
+
+  /* ══════════════════════════════════════════════
+     ARTIFICIAL INTELLIGENCE (extended)
+  ══════════════════════════════════════════════ */
+  {id:500,title:"Artificial Intelligence: A Modern Approach",  author:"Russell & Norvig",             year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780137903955-L.jpg",read:"https://aima.cs.berkeley.edu/",                                                                      source:"htmlbook",  level:"intermediate",desc:"The world's most widely used AI textbook. The official site offers free chapter slides, exercises, and supplementary material for all four editions."},
+  {id:501,title:"Dive into Deep Learning (D2L)",               author:"Zhang, Lipton, Li & Smola",   year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780262048927-L.jpg",read:"https://d2l.ai/",                                                                                    source:"htmlbook",  level:"all",         desc:"Interactive open textbook with live runnable code in PyTorch, JAX, and TensorFlow. Adopted by 500+ universities. Covers transformers, attention, and diffusion models."},
+  {id:502,title:"Deep Learning (MIT Press)",                   author:"Goodfellow, Bengio & Courville",year:2016,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780262035613-L.jpg",read:"https://www.deeplearningbook.org/",                                                                 source:"mit",       level:"advanced",    desc:"The gold-standard graduate textbook on deep learning covering mathematical foundations, modern architectures, optimisation, and regularisation. Full text free from MIT Press."},
+  {id:503,title:"Interpretable Machine Learning (IML)",        author:"Christoph Molnar",             year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781492049005-L.jpg",read:"https://christophm.github.io/interpretable-ml-book/intro.html",                                               source:"htmlbook",  level:"intermediate",desc:"Practical guide to making black-box ML models interpretable. Covers SHAP, LIME, partial dependence plots, and fairness metrics. Freely readable online chapter by chapter."},
+  {id:504,title:"Probabilistic Machine Learning Vol. 2",       author:"Kevin P. Murphy",              year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780262048439-L.jpg",read:"https://probml.github.io/pml-book/book2.html",                                                      source:"mit",       level:"advanced",    desc:"MIT Press two-volume series covering probabilistic ML from fundamentals through diffusion models. Full free draft hosted by the author on GitHub Pages."},
+  {id:505,title:"Natural Language Processing with Python",     author:"Bird, Klein & Loper",         year:2009,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780596516499-L.jpg",read:"https://www.nltk.org/book/",                                                                          source:"htmlbook",  level:"beginner",    desc:"The official NLTK book — freely readable online chapter by chapter. Covers text processing, classification, parsing, semantic analysis, and building NLP pipelines in Python."},
+  {id:506,title:"Attention Is All You Need (Transformer Paper)",author:"Vaswani et al. (Google)",    year:2017,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781492045526-L.jpg",read:"https://arxiv.org/abs/1706.03762",                                                                   source:"arxiv",     level:"advanced",    desc:"The landmark Google Brain paper that introduced the Transformer architecture — the foundation of every modern LLM including GPT, BERT, and T5. Free on arXiv."},
+  {id:507,title:"Build an LLM From Scratch",                   author:"Sebastian Raschka",            year:2024,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781633437166-L.jpg",read:"https://github.com/rasbt/LLMs-from-scratch",                                                         source:"github",    level:"intermediate",desc:"Step-by-step guide to building a GPT-like LLM from scratch in PyTorch. Covers tokenisation, attention mechanisms, pre-training, and fine-tuning. All code freely on GitHub."},
+  {id:508,title:"ML Systems Engineering (TinyML)",             author:"Vijay Janapa Reddi (Harvard)",year:2024,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781098164331-L.jpg",read:"https://harvard-edge.github.io/cs249r_book/",                                                        source:"htmlbook",  level:"intermediate",desc:"Open textbook bridging ML and systems from CNNs to transformers, hardware benchmarking, and edge deployment. A living open textbook freely readable online from Harvard."},
+  {id:509,title:"The Matrix Calculus You Need for Deep Learning",author:"Parr & Howard (fast.ai)",   year:2018,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781492045526-L.jpg",read:"https://arxiv.org/abs/1802.01528",                                                                   source:"arxiv",     level:"intermediate",desc:"A focused, visual guide to the matrix calculus that powers backpropagation and gradient-based optimisation in neural networks. Free on arXiv."},
+  {id:510,title:"Python for Data Analysis (3rd Ed.)",          author:"Wes McKinney",                year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781098104030-L.jpg",read:"https://wesmckinney.com/book/",                                                                       source:"htmlbook",  level:"beginner",    desc:"The definitive pandas reference written by its creator. Covers data wrangling, cleaning, groupby, and time-series analysis. Freely readable online — no account needed."},
+  {id:511,title:"NLP with Transformers (Notebooks)",           author:"Tunstall, von Werra & Wolf",  year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781098136796-L.jpg",read:"https://github.com/nlp-with-transformers/notebooks",                                                  source:"github",    level:"intermediate",desc:"Hands-on guide to the Hugging Face ecosystem — fine-tuning BERT, GPT, and T5 for classification, QA, and generation. All Jupyter notebooks freely on GitHub."},
+
+  /* ══════════════════════════════════════════════
+     ELECTRICAL & ELECTRONICS (ECE)
+  ══════════════════════════════════════════════ */
+  {id:600,title:"All About Circuits — DC, AC & Beyond",        author:"Tony R. Kuphaldt",             year:2022,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9781727709032-L.jpg",read:"https://www.allaboutcircuits.com/textbook/",                                                    source:"htmlbook",  level:"beginner",    desc:"A complete, freely-readable online EE textbook series covering DC, AC, semiconductors, digital logic, and reference material. No login required — read in browser."},
+  {id:601,title:"Signals and Systems — MIT OCW 6.003",         author:"MIT OpenCourseWare",           year:2022,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780470177952-L.jpg",read:"https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/",                               source:"htmlbook",  level:"intermediate",desc:"MIT OCW complete free course on signals and systems: continuous/discrete signals, Fourier and Laplace transforms, feedback, and control. All notes freely accessible."},
+  {id:602,title:"The Feynman Lectures on Physics Vol. II",     author:"Richard Feynman (Caltech)",    year:2013,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780465023950-L.jpg",read:"https://www.feynmanlectures.caltech.edu/II_toc.html",                                            source:"htmlbook",  level:"intermediate",desc:"Legendary Feynman Lectures Vol. II — electromagnetism and matter, fully readable free online from Caltech. World-class physics explained with unique clarity."},
+  {id:603,title:"University Physics Vol. 2 — Electricity",     author:"OpenStax",                     year:2023,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9781938168185-L.jpg",read:"https://openstax.org/details/books/university-physics-volume-2",                               source:"htmlbook",  level:"beginner",    desc:"Free peer-reviewed OpenStax textbook covering electricity, magnetism, capacitors, inductors, electromagnetic waves, and optics. Read online with no account needed."},
+  {id:604,title:"Discrete-Time Signal Processing — MIT OCW",   author:"MIT OpenCourseWare",           year:2021,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780131988422-L.jpg",read:"https://ocw.mit.edu/courses/6-341-discrete-time-signal-processing-fall-2005/",                  source:"htmlbook",  level:"advanced",    desc:"MIT OCW advanced DSP: sampling, Z-transform, filter design, FFT algorithms, and multirate systems. Lecture notes and assignments fully accessible for free."},
+  {id:605,title:"Circuits and Electronics — MIT OCW 6.002",    author:"MIT OpenCourseWare",           year:2020,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780073380957-L.jpg",read:"https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/",                        source:"htmlbook",  level:"beginner",    desc:"MIT OCW foundational circuits course covering resistors, capacitors, op-amps, diodes, transistors, and frequency response. Video lectures and notes fully free."},
+  {id:606,title:"Digital Communications — MIT OCW 6.450",      author:"MIT OpenCourseWare",           year:2020,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780072977523-L.jpg",read:"https://ocw.mit.edu/courses/6-450-principles-of-digital-communications-i-fall-2006/",             source:"htmlbook",  level:"intermediate",desc:"MIT OCW free course on digital communications: modulation, coding, channel capacity, and detection theory. Lecture notes and problem sets fully accessible online."},
+  {id:607,title:"Introduction to Embedded Systems",            author:"Lee & Seshia (UC Berkeley)",   year:2017,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780262533638-L.jpg",read:"https://ptolemy.berkeley.edu/books/leeseshia/",                                                  source:"htmlbook",  level:"intermediate",desc:"Free online textbook from UC Berkeley on embedded systems: modeling, simulation, real-time scheduling, interfaces, and concurrent computation."},
+  {id:608,title:"College Physics — OpenStax (2nd Ed.)",        author:"OpenStax",                     year:2022,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9781711494111-L.jpg",read:"https://openstax.org/details/books/college-physics-2e",                                          source:"htmlbook",  level:"beginner",    desc:"Free peer-reviewed OpenStax college physics textbook covering mechanics, electricity, magnetism, and waves with algebra-based approach. Read online, no login."},
+
+  /* ══════════════════════════════════════════════
+     CIVIL ENGINEERING
+  ══════════════════════════════════════════════ */
+   
+  {id:701,title:"Structural Analysis — MIT OCW 1.571",         author:"MIT OpenCourseWare",           year:2020,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780070481633-L.jpg",read:"https://ocw.mit.edu/courses/1-571-structural-analysis-and-control-spring-2004/",                       source:"htmlbook",  level:"intermediate",desc:"MIT OCW free course on structural analysis and control. Covers matrix methods, finite elements, dynamic loading, and structural stability. Notes freely available."},
+  
+  {id:703,title:"Geotechnical Engineering — MIT OCW",          author:"MIT OpenCourseWare",           year:2021,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780470376621-L.jpg",read:"https://ocw.mit.edu/courses/1-361-advanced-soil-mechanics-fall-2004/",                                 source:"htmlbook",  level:"advanced",    desc:"MIT OCW advanced soil mechanics: consolidation, shear strength, slope stability, and earth pressure. Free lecture notes fully accessible without registration."},
+  {id:704,title:"Introduction to Transportation Engineering",  author:"Open Textbook Library",        year:2020,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780073397245-L.jpg",read:"https://open.umn.edu/opentextbooks/textbooks/670",                                                    source:"htmlbook",  level:"intermediate",desc:"Free open textbook covering transport planning, traffic engineering, highway design, geometric alignment, and pavement design. Freely readable via Open Textbook Library."},
+  {id:705,title:"Fluid Mechanics for Civil Engineers — MIT",   author:"MIT OpenCourseWare",           year:2022,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780071167031-L.jpg",read:"https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/",                              source:"htmlbook",  level:"intermediate",desc:"MIT OCW free course on fluid mechanics for civil engineers: hydrostatics, Bernoulli, pipe flow, open channels, and hydraulic structures. Freely accessible online."},
+  {id:706,title:"Solid Mechanics — MIT OCW 1.050",             author:"MIT OpenCourseWare",           year:2021,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780070605923-L.jpg",read:"https://ocw.mit.edu/courses/1-050-solid-mechanics-fall-2004/",                                        source:"htmlbook",  level:"intermediate",desc:"MIT OCW solid mechanics for civil engineers: stress, strain, elasticity, bending of beams, and virtual work principle. Full notes and assignments freely available."},
+  
+  /* ══════════════════════════════════════════════
+     ENGINEERING MATHEMATICS (new genre)
+  ══════════════════════════════════════════════ */
+  {id:800,title:"Single Variable Calculus — MIT OCW 18.01SC",  author:"MIT OpenCourseWare",           year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780534393397-L.jpg",read:"https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",                        source:"htmlbook",  level:"beginner",    desc:"MIT OCW complete single-variable calculus course: limits, derivatives, integrals, and applications. Lecture notes, exams, and video lectures all freely available online."},
+  {id:801,title:"Multivariable Calculus — MIT OCW 18.02SC",    author:"MIT OpenCourseWare",           year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780538497879-L.jpg",read:"https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/",                          source:"htmlbook",  level:"intermediate",desc:"MIT OCW multivariable calculus: vectors, partial derivatives, double and triple integrals, Green's and Stokes' theorems, and divergence theorem. All free online."},
+  {id:802,title:"Linear Algebra — MIT OCW 18.06SC",            author:"Gilbert Strang (MIT)",         year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780980232776-L.jpg",read:"https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",                                  source:"htmlbook",  level:"intermediate",desc:"The legendary Gilbert Strang linear algebra course at MIT — vectors, matrices, vector spaces, eigenvalues, SVD, and applications. Video lectures and notes all free."},
+  {id:803,title:"Differential Equations — MIT OCW 18.03SC",    author:"MIT OpenCourseWare",           year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780495012658-L.jpg",read:"https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/",                          source:"htmlbook",  level:"intermediate",desc:"MIT OCW differential equations: ODEs, Laplace transforms, linear systems, phase portraits, and Fourier series. Lecture notes and problem sets fully free online."},
+  {id:804,title:"Probability & Statistics — MIT OCW 18.650",   author:"MIT OpenCourseWare",           year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780321826237-L.jpg",read:"https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/",                      source:"htmlbook",  level:"intermediate",desc:"MIT OCW statistics course covering estimation, hypothesis testing, regression, and Bayesian inference. Full lecture notes and assignments freely accessible online."},
+  {id:805,title:"OpenStax Calculus Volume 1",                  author:"OpenStax",                     year:2023,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9781938168024-L.jpg",read:"https://openstax.org/details/books/calculus-volume-1",                                          source:"htmlbook",  level:"beginner",    desc:"Free peer-reviewed OpenStax textbook covering limits, derivatives, integrals, and applications of single-variable calculus. Read online in browser — no login needed."},
+  {id:806,title:"OpenStax Calculus Volume 2",                  author:"OpenStax",                     year:2023,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9781938168055-L.jpg",read:"https://openstax.org/details/books/calculus-volume-2",                                          source:"htmlbook",  level:"intermediate",desc:"Free OpenStax textbook covering integration techniques, sequences and series, polar coordinates, and parametric equations. Read online freely without any account."},
+  {id:807,title:"OpenStax Calculus Volume 3",                  author:"OpenStax",                     year:2023,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9781938168079-L.jpg",read:"https://openstax.org/details/books/calculus-volume-3",                                          source:"htmlbook",  level:"intermediate",desc:"Free OpenStax textbook on multivariable calculus, vectors, partial derivatives, and vector calculus theorems. Freely readable online without any account."},
+  {id:808,title:"Numerical Methods — MIT OCW 18.335",          author:"MIT OpenCourseWare",           year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780521687065-L.jpg",read:"https://ocw.mit.edu/courses/18-335j-introduction-to-numerical-methods-spring-2019/",              source:"htmlbook",  level:"advanced",    desc:"MIT OCW numerical methods: floating-point arithmetic, LU factorisation, iterative solvers, eigenvalue algorithms, FFT, and ODEs. Lecture notes freely available."},
+  {id:809,title:"Discrete Mathematics — MIT OCW 6.042J",       author:"MIT OpenCourseWare",           year:2021,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780262528931-L.jpg",read:"https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",                  source:"htmlbook",  level:"beginner",    desc:"MIT OCW mathematics for CS: proofs, sets, graph theory, number theory, probability, and counting. A rigorous yet readable free online course."},
+  {id:810,title:"University Physics Vol. 1 — Mechanics",       author:"OpenStax",                     year:2023,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9781938168277-L.jpg",read:"https://openstax.org/details/books/university-physics-volume-1",                                source:"htmlbook",  level:"beginner",    desc:"Free peer-reviewed OpenStax textbook covering mechanics, kinematics, Newton's laws, energy, momentum, and oscillations — essential mathematical physics for engineers."},
+  {id:811,title:"Feynman Lectures on Physics Vol. I",          author:"Richard Feynman (Caltech)",    year:2013,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780465023820-L.jpg",read:"https://www.feynmanlectures.caltech.edu/I_toc.html",                                              source:"htmlbook",  level:"intermediate",desc:"The legendary Feynman Lectures Vol. I on mechanics, radiation, and heat — freely readable online from Caltech. One of the greatest physics resources ever written."},
+
+  /* ══════════════════════════════════════════════
+     FICTION (new additions — all Gutenberg)
+  ══════════════════════════════════════════════ */
+  {id:400,title:"Crime and Punishment",         author:"Fyodor Dostoevsky",   year:1866,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52717W-L.jpg",  read:"https://www.gutenberg.org/ebooks/2554",  source:"gutenberg",level:"all",  desc:"Raskolnikov, a destitute student in St. Petersburg, commits a murder and psychologically unravels. One of literature's greatest psychological novels."},
+  {id:401,title:"The Trial",                    author:"Franz Kafka",         year:1925,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52685W-L.jpg",  read:"https://www.gutenberg.org/ebooks/7849",  source:"gutenberg",level:"all",  desc:"Josef K. is arrested by a mysterious court without ever being told his crime — Kafka's existential nightmare of bureaucratic absurdity."},
+  {id:402,title:"Don Quixote",                  author:"Miguel de Cervantes", year:1605,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL503988W-L.jpg",  read:"https://www.gutenberg.org/ebooks/996",   source:"gutenberg",level:"all",  desc:"Often called the first modern novel. The idealistic knight Don Quixote and his squire Sancho Panza set off on absurd chivalric adventures across Spain."},
+  {id:403,title:"The Metamorphosis",            author:"Franz Kafka",         year:1915,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52684W-L.jpg",  read:"https://www.gutenberg.org/ebooks/5200",  source:"gutenberg",level:"all",  desc:"Gregor Samsa wakes one morning transformed into a giant insect. Kafka's most celebrated and haunting short novel about alienation and family."},
+  {id:404,title:"A Tale of Two Cities",         author:"Charles Dickens",     year:1859,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL72478W-L.jpg",  read:"https://www.gutenberg.org/ebooks/98",    source:"gutenberg",level:"all",  desc:"Set in London and Paris before and during the French Revolution — a sweeping story of love, sacrifice, and resurrection."},
+  {id:405,title:"The Scarlet Letter",           author:"Nathaniel Hawthorne", year:1850,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL53948W-L.jpg",  read:"https://www.gutenberg.org/ebooks/25344", source:"gutenberg",level:"all",  desc:"A powerful tale of sin, guilt, and redemption in 17th-century Puritan Boston — a cornerstone of American literature."},
+  {id:406,title:"Moby Dick",                    author:"Herman Melville",     year:1851,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL102749W-L.jpg",  read:"https://www.gutenberg.org/ebooks/2701",  source:"gutenberg",level:"all",  desc:"Captain Ahab's obsessive quest to hunt the white whale Moby Dick — one of the great American novels exploring obsession and fate."},
+  {id:407,title:"The Adventures of Tom Sawyer", author:"Mark Twain",          year:1876,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL53986W-L.jpg",  read:"https://www.gutenberg.org/ebooks/74",    source:"gutenberg",level:"all",  desc:"Young Tom Sawyer's adventures growing up along the Mississippi River — witty, warm, and endlessly entertaining."},
+  {id:408,title:"The Count of Monte Cristo",    author:"Alexandre Dumas",     year:1844,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52762W-L.jpg",  read:"https://www.gutenberg.org/ebooks/1184",  source:"gutenberg",level:"all",  desc:"Edmond Dantès — wrongly imprisoned — returns as the mysterious Count of Monte Cristo to exact an elaborate revenge on those who betrayed him."},
+  {id:409,title:"Great Expectations",           author:"Charles Dickens",     year:1861,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL72479W-L.jpg",  read:"https://www.gutenberg.org/ebooks/1400",  source:"gutenberg",level:"all",  desc:"Young Pip rises from poverty to the life of a gentleman, driven by mysterious wealth, a haunting obsession, and the harsh lessons of society."},
+  {id:410,title:"Adventures of Huckleberry Finn",author:"Mark Twain",         year:1884,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL53987W-L.jpg",  read:"https://www.gutenberg.org/ebooks/76",    source:"gutenberg",level:"all",  desc:"Huck Finn and Jim float down the Mississippi on a raft in this masterpiece of American realism, humour, and moral courage."},
+  {id:411,title:"The Jungle Book",              author:"Rudyard Kipling",     year:1894,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL51985W-L.jpg",  read:"https://www.gutenberg.org/ebooks/236",   source:"gutenberg",level:"all",  desc:"The beloved story of Mowgli, a boy raised by wolves in the Indian jungle alongside Baloo the bear and Bagheera the panther."},
+  {id:412,title:"The War of the Worlds",        author:"H.G. Wells",          year:1898,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52681W-L.jpg",  read:"https://www.gutenberg.org/ebooks/36",    source:"gutenberg",level:"all",  desc:"Martians invade England with devastating heat-rays and tripod fighting machines in this landmark of science fiction."},
+  {id:413,title:"The Time Machine",             author:"H.G. Wells",          year:1895,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52682W-L.jpg",  read:"https://www.gutenberg.org/ebooks/35",    source:"gutenberg",level:"all",  desc:"A scientist invents a time machine and travels to the far future to discover that humanity has split into two strange species — the Eloi and the Morlocks."},
+  {id:414,title:"The Invisible Man",            author:"H.G. Wells",          year:1897,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52683W-L.jpg",  read:"https://www.gutenberg.org/ebooks/5230",  source:"gutenberg",level:"all",  desc:"A scientist renders himself invisible but cannot reverse the process, spiraling into madness and violence in this gripping science-fiction thriller."},
+  {id:415,title:"Ulysses",                      author:"James Joyce",         year:1922,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52678W-L.jpg",  read:"https://www.gutenberg.org/ebooks/4300",  source:"gutenberg",level:"advanced",desc:"A single day in Dublin — 16 June 1904 — narrated with stream-of-consciousness virtuosity. The defining work of literary modernism."},
+
+  /* ══════════════════════════════════════════════
+     NON-FICTION (all Gutenberg public domain)
+  ══════════════════════════════════════════════ */
+  {id:450,title:"The Wealth of Nations",        author:"Adam Smith",          year:1776,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL166896W-L.jpg",read:"https://www.gutenberg.org/ebooks/3300",  source:"gutenberg",level:"all",desc:"The foundational text of modern economics — Smith's landmark analysis of free markets, division of labour, and the invisible hand that guides them."},
+  {id:451,title:"Walden",                       author:"Henry David Thoreau", year:1854,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL150167W-L.jpg",read:"https://www.gutenberg.org/ebooks/205",   source:"gutenberg",level:"all",desc:"Thoreau's reflections on simple living in natural surroundings — a foundational text of American transcendentalism and environmental thinking."},
+  {id:452,title:"Autobiography of Benjamin Franklin",author:"Benjamin Franklin",year:1791,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL262423W-L.jpg",read:"https://www.gutenberg.org/ebooks/20203",source:"gutenberg",level:"all",desc:"Franklin's account of his rise from poverty to statesman, scientist, and philosopher — one of America's most inspiring life stories."},
+  {id:453,title:"Common Sense",                 author:"Thomas Paine",        year:1776,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL166897W-L.jpg",read:"https://www.gutenberg.org/ebooks/147",   source:"gutenberg",level:"all",desc:"Paine's passionate pamphlet arguing for American independence from Britain — one of the most influential political documents ever written."},
+  {id:454,title:"Democracy in America",         author:"Alexis de Tocqueville",year:1835,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL166895W-L.jpg",read:"https://www.gutenberg.org/ebooks/816",   source:"gutenberg",level:"all",desc:"A penetrating analysis of American democracy — its strengths, dangers, and social fabric — by a French diplomat touring the United States."},
+  {id:455,title:"The Communist Manifesto",      author:"Marx & Engels",       year:1848,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL166898W-L.jpg",read:"https://www.gutenberg.org/ebooks/61",    source:"gutenberg",level:"all",desc:"The foundational pamphlet of communism, analysing class struggle and calling workers to unite — one of the most read political texts in history."},
+  {id:456,title:"Up From Slavery",              author:"Booker T. Washington",year:1901,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL262424W-L.jpg",read:"https://www.gutenberg.org/ebooks/2376",  source:"gutenberg",level:"all",desc:"Washington's remarkable autobiography tracing his journey from enslaved child to founder of the Tuskegee Institute — a story of determination and hope."},
+  {id:457,title:"My Experiments with Truth",    author:"Mahatma Gandhi",      year:1927,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL909093W-L.jpg",read:"https://www.gutenberg.org/ebooks/76423", source:"gutenberg",level:"all",desc:"Gandhi's autobiography tracing his spiritual and political evolution and the birth of non-violent resistance. Full text freely available on Project Gutenberg."},
+  {id:458,title:"The Souls of Black Folk",      author:"W.E.B. Du Bois",      year:1903,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL262425W-L.jpg",read:"https://www.gutenberg.org/ebooks/408",   source:"gutenberg",level:"all",desc:"Du Bois's landmark collection on history and culture of African Americans — introducing the concepts of the 'colour line' and 'double consciousness'."},
+  {id:459,title:"Narrative of Frederick Douglass",author:"Frederick Douglass",year:1845,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL262422W-L.jpg",read:"https://www.gutenberg.org/ebooks/23",    source:"gutenberg",level:"all",desc:"Douglass's powerful first-person account of his life as an enslaved person and his eventual escape to freedom — one of the most important American memoirs."},
+  {id:460,title:"Second Treatise of Government", author:"John Locke",         year:1689,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL166899W-L.jpg",read:"https://www.gutenberg.org/ebooks/7370",  source:"gutenberg",level:"all",desc:"Locke's foundational political philosophy arguing that government derives its authority from the consent of the governed — hugely influential on the US Constitution."},
+
+  /* ══════════════════════════════════════════════
+     AI & MACHINE LEARNING — new additions
+  ══════════════════════════════════════════════ */
+  {id:214,title:"Understanding Deep Learning",                   author:"Simon J.D. Prince",                       year:2024,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780262048644-L.jpg",read:"https://udlbook.github.io/udlbook/",                                          source:"htmlbook",  level:"intermediate",desc:"A comprehensive and modern deep learning textbook freely released by the author. Covers supervised learning, transformers, diffusion models, and reinforcement learning with clear visual explanations."},
+  {id:215,title:"Introduction to Statistical Learning",          author:"James, Witten, Hastie & Tibshirani",      year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781071614174-L.jpg",read:"https://www.statlearning.com/",                                              source:"authorpdf", level:"beginner",    desc:"The free gold-standard textbook for statistical learning in R and Python — covering regression, classification, SVMs, trees, and deep learning. Full PDF freely available from the authors at statlearning.com."},
+  {id:216,title:"Reinforcement Learning: An Introduction",       author:"Sutton & Barto",                          year:2020,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780262039246-L.jpg",read:"http://incompleteideas.net/book/the-book-2nd.html",                         source:"authorpdf", level:"advanced",    desc:"The definitive textbook on reinforcement learning by its pioneers. Covers Markov decision processes, dynamic programming, TD-learning, and deep RL. Full draft freely available from the authors."},
+  {id:217,title:"Hands-On Machine Learning (3rd Ed.)",           author:"Aurélien Géron",                          year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781098125974-L.jpg",read:"https://github.com/ageron/handson-ml3",                                      source:"github",    level:"beginner",    desc:"One of the most popular practical ML books. Covers Scikit-Learn, Keras, and TensorFlow with hundreds of examples and exercises. All Jupyter notebooks are freely available on GitHub."},
+  {id:218,title:"Machine Learning Engineering",                  author:"Andriy Burkov",                           year:2020,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781999579579-L.jpg",read:"http://www.mlebook.com/wiki/",                                               source:"authorpdf", level:"intermediate",desc:"A practical guide to building and deploying production ML systems — covering data pipelines, model training, deployment, and monitoring. Freely readable online under a 'read first, buy later' principle."},
+
+  /* ══════════════════════════════════════════════
+     AI & MACHINE LEARNING — user-added books
+  ══════════════════════════════════════════════ */
+  {id:219,title:"Programming Computer Vision with Python",        author:"Jan Erik Solem",                          year:2012,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781449316549-L.jpg",read:"http://programmingcomputervision.com/",                                       source:"authorpdf", level:"intermediate",desc:"A hands-on introduction to computer vision with Python — covering image processing, feature detection, 3D reconstruction, and machine learning for visual recognition. Freely available from the author's website."},
+  {id:220,title:"Data Science for Business",                      author:"Provost & Fawcett",                        year:2013,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781449361327-L.jpg",read:"https://www.researchgate.net/publication/256438799_Data_Science_for_Business",source:"authorpdf", level:"beginner",    desc:"A non-technical introduction to data science and machine learning for business professionals — covering data-analytic thinking, classification, regression, clustering, and model evaluation. 28-page preview freely available on ResearchGate."},
+  {id:221,title:"Data Mining Algorithms In R",                    author:"Wikibooks Contributors",                  year:2023,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780123748560-L.jpg",read:"https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R",                 source:"htmlbook",  level:"intermediate",desc:"A free Wikibook covering practical data mining algorithms implemented in R — including decision trees, clustering, association rules, neural networks, and text mining. Fully readable online."},
+  {id:222,title:"Scikit-learn Tutorial: Statistical-Learning for Scientific Data Processing", author:"Gaël Varoquaux et al.", year:2022,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781783988365-L.jpg",read:"http://gael-varoquaux.info/scikit-learn-tutorial/",                      source:"htmlbook",  level:"beginner",    desc:"A comprehensive hands-on tutorial on statistical machine learning using scikit-learn — covering supervised and unsupervised learning, model selection, and pipelines for scientific data. Freely readable online."},
+  {id:223,title:"Natural Language Processing with Python",        author:"Bird, Klein & Loper (NLTK)",              year:2019,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780596516499-L.jpg",read:"https://www.nltk.org/book/",                                                 source:"htmlbook",  level:"beginner",    desc:"The definitive free guide to NLP with Python using the NLTK library — covering tokenization, tagging, parsing, semantic analysis, and text classification. Fully readable online from the official NLTK website."},
+  {id:224,title:"Explanatory Model Analysis",                     author:"Biecek & Burzykowski",                    year:2021,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9780367135591-L.jpg",read:"https://ema.drwhy.ai/",                                                      source:"htmlbook",  level:"intermediate",desc:"A comprehensive guide to explainable AI and interpretable machine learning — covering break-down plots, SHAP values, LIME, partial-dependence profiles, and model fairness. Fully free to read online."},
+  {id:225,title:"Practical Deep Learning for Coders",             author:"Jeremy Howard & Sylvain Gugger (fast.ai)",year:2020,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9781492045526-L.jpg",read:"https://course.fast.ai/Resources/book.html",                               source:"htmlbook",  level:"beginner",    desc:"The fast.ai companion book teaching deep learning from the top down — covering vision, NLP, tabular data, and deployment with PyTorch. Freely readable online with Jupyter notebooks included."},
+  {id:226,title:"Physics-based Deep Learning",                    author:"Thuerey et al.",                          year:2021,genre:"AI & Machine Learning",cover:"https://covers.openlibrary.org/b/isbn/9783031066320-L.jpg",read:"https://physicsbaseddeeplearning.org/intro.html",                            source:"htmlbook",  level:"advanced",    desc:"An open-access textbook on physics-based deep learning — covering differentiable simulations, physics-informed neural networks, neural operators, and inverse problems. Freely readable online with code examples."},
+
+  /* ══════════════════════════════════════════════
+     FICTION — new additions
+  ══════════════════════════════════════════════ */
+  {id:416,title:"The Brothers Karamazov",                        author:"Fyodor Dostoevsky",                       year:1880,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52716W-L.jpg",              read:"https://www.gutenberg.org/ebooks/28054",                                     source:"gutenberg", level:"advanced",    desc:"Dostoevsky's final and greatest novel — a profound exploration of faith, doubt, morality, and family through three brothers and the murder of their father. A cornerstone of world literature."},
+  {id:417,title:"Anna Karenina",                                 author:"Leo Tolstoy",                             year:1878,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52759W-L.jpg",              read:"https://www.gutenberg.org/ebooks/1399",                                      source:"gutenberg", level:"all",         desc:"Tolstoy's sweeping masterpiece following aristocratic Anna as she abandons her marriage for a passionate affair, against the backdrop of Russian high society."},
+  {id:418,title:"Les Misérables",                                author:"Victor Hugo",                             year:1862,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL80513W-L.jpg",              read:"https://www.gutenberg.org/ebooks/135",                                       source:"gutenberg", level:"all",         desc:"Hugo's epic of social justice in 19th-century France, following ex-convict Jean Valjean's quest for redemption amid poverty, love, and revolution."},
+  {id:419,title:"The Idiot",                                     author:"Fyodor Dostoevsky",                       year:1869,genre:"Fiction",cover:"https://covers.openlibrary.org/b/olid/OL52718W-L.jpg",              read:"https://www.gutenberg.org/ebooks/2638",                                      source:"gutenberg", level:"all",         desc:"Prince Myshkin — a pure and good-natured man returned from a Swiss sanatorium — collides with the corruption and chaos of Russian society in this deeply psychological novel."},
+
+  /* ══════════════════════════════════════════════
+     CLASSIC LITERATURE — new additions
+  ══════════════════════════════════════════════ */
+  {id:13, title:"A Room with a View",                            author:"E.M. Forster",                            year:1908,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL59791W-L.jpg",     read:"https://www.gutenberg.org/ebooks/2641",                                      source:"gutenberg", level:"all",         desc:"Young Lucy Honeychurch's journey from Edwardian social convention toward personal freedom after a transformative trip to Florence — Forster's witty romantic masterpiece."},
+  {id:14, title:"The Strange Case of Dr Jekyll and Mr Hyde",     author:"Robert Louis Stevenson",                  year:1886,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL83412W-L.jpg",     read:"https://www.gutenberg.org/ebooks/43",                                        source:"gutenberg", level:"all",         desc:"A lawyer investigates the connection between the respectable Dr Jekyll and the monstrous Mr Hyde in this classic exploration of duality and Victorian repression."},
+  {id:15, title:"Little Women",                                  author:"Louisa May Alcott",                       year:1868,genre:"Classic Literature",cover:"https://covers.openlibrary.org/b/olid/OL55881W-L.jpg",     read:"https://www.gutenberg.org/ebooks/514",                                       source:"gutenberg", level:"all",         desc:"The beloved story of the four March sisters — Meg, Jo, Beth, and Amy — growing up in New England during the Civil War. One of America's most enduring novels."},
+
+  /* ══════════════════════════════════════════════
+     NON-FICTION — new additions
+  ══════════════════════════════════════════════ */
+  {id:461,title:"The Federalist Papers",                         author:"Hamilton, Madison & Jay",                 year:1788,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL166893W-L.jpg",          read:"https://www.gutenberg.org/ebooks/1404",                                      source:"gutenberg", level:"all",         desc:"The 85 foundational essays advocating for ratification of the US Constitution — essential reading for understanding American government, federalism, and the separation of powers."},
+  {id:462,title:"The Interpretation of Dreams",                  author:"Sigmund Freud",                           year:1899,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL910133W-L.jpg",           read:"https://www.gutenberg.org/ebooks/150",                                       source:"gutenberg", level:"all",         desc:"Freud's landmark work introducing psychoanalysis and the theory that dreams are the royal road to the unconscious — one of the most influential books of the 20th century."},
+  {id:463,title:"Thus Spake Zarathustra",                        author:"Friedrich Nietzsche",                     year:1883,genre:"Non-Fiction",cover:"https://covers.openlibrary.org/b/olid/OL586860W-L.jpg",           read:"https://www.gutenberg.org/ebooks/1998",                                      source:"gutenberg", level:"all",         desc:"Nietzsche's philosophical masterpiece presenting the Übermensch and the death of God through the prophet Zarathustra's teachings — bold, poetic, and endlessly debated."},
+
+  /* ══════════════════════════════════════════════
+     SCIENCE & PHILOSOPHY — new additions
+  ══════════════════════════════════════════════ */
+  {id:56, title:"Critique of Pure Reason",                       author:"Immanuel Kant",                           year:1781,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/olid/OL166900W-L.jpg",   read:"https://www.gutenberg.org/ebooks/4280",                                      source:"gutenberg", level:"advanced",    desc:"Kant's monumental philosophical work investigating the nature and limits of human knowledge — the foundation of modern Western philosophy and the bridge between rationalism and empiricism."},
+  {id:57, title:"The Selfish Gene",                              author:"Richard Dawkins",                         year:1976,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/isbn/9780198788607-L.jpg",read:"https://archive.org/details/selfishgene0000dawk",                             source:"openlibrary",level:"all",        desc:"Dawkins' revolutionary popular-science book presenting evolution from the gene's-eye perspective, introducing memes and changing how the world thinks about natural selection."},
+  {id:58, title:"A Brief History of Time",                       author:"Stephen Hawking",                         year:1988,genre:"Science & Philosophy",cover:"https://covers.openlibrary.org/b/isbn/9780553380163-L.jpg",read:"https://archive.org/details/briefhistoryofti00hawk",                         source:"openlibrary",level:"all",        desc:"Hawking's landmark popular-science book explaining cosmology, black holes, the Big Bang, and the nature of time to a general audience. One of the best-selling science books ever written."},
+
+  /* ══════════════════════════════════════════════
+     ADVENTURE & MYSTERY — new additions
+  ══════════════════════════════════════════════ */
+  {id:36, title:"The Three Musketeers",                          author:"Alexandre Dumas",                         year:1844,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL52763W-L.jpg",    read:"https://www.gutenberg.org/ebooks/1257",                                      source:"gutenberg", level:"all",         desc:"Young d'Artagnan joins the legendary trio Athos, Porthos, and Aramis to protect the French crown in this swashbuckling tale of adventure, honour, and intrigue."},
+  {id:37, title:"Alice's Adventures in Wonderland",              author:"Lewis Carroll",                           year:1865,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL26438936W-L.jpg",  read:"https://www.gutenberg.org/ebooks/11",                                        source:"gutenberg", level:"all",         desc:"Alice falls down a rabbit hole into a surreal world of illogical creatures and absurd situations — Carroll's beloved nonsense classic read by children and philosophers alike."},
+  {id:38, title:"The Mysterious Island",                         author:"Jules Verne",                             year:1874,genre:"Adventure & Mystery",cover:"https://covers.openlibrary.org/b/olid/OL52679W-L.jpg",    read:"https://www.gutenberg.org/ebooks/1268",                                      source:"gutenberg", level:"all",         desc:"Five American prisoners escape a Civil War camp in a balloon and land on a deserted island, where they must use science and ingenuity to survive — and uncover a mysterious benefactor."},
+
+  /* ══════════════════════════════════════════════
+     CIVIL ENGINEERING — new additions
+  ══════════════════════════════════════════════ */
+  {id:708,title:"Design of Concrete Structures — LibreTexts",    author:"LibreTexts Engineering",                  year:2023,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780072453829-L.jpg",  read:"https://eng.libretexts.org/Bookshelves/Civil_Engineering",                  source:"htmlbook",  level:"intermediate",desc:"Free peer-reviewed LibreTexts civil engineering collection covering structural design, concrete, steel, and timber construction. Readable online without any account or login."},
+  {id:709,title:"Water Resources Engineering — MIT OCW 1.72",    author:"MIT OpenCourseWare",                      year:2021,genre:"Civil Engineering",cover:"https://covers.openlibrary.org/b/isbn/9780130286772-L.jpg",  read:"https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/",         source:"htmlbook",  level:"intermediate",desc:"MIT OCW groundwater hydrology course covering flow through porous media, well hydraulics, aquifer testing, and contaminant transport. Full lecture notes freely accessible online."},
+
+  /* ══════════════════════════════════════════════
+     ELECTRICAL & ELECTRONICS — new additions
+  ══════════════════════════════════════════════ */
+  {id:609,title:"Electrical Engineering — LibreTexts",           author:"LibreTexts Engineering",                  year:2023,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780073366906-L.jpg",read:"https://eng.libretexts.org/Bookshelves/Electrical_Engineering",          source:"htmlbook",  level:"intermediate",desc:"Free LibreTexts electrical engineering collection covering circuit analysis, electromagnetics, power systems, and electronics. Peer-reviewed and freely accessible online without login."},
+  {id:610,title:"Control Systems — Wikibooks",                   author:"Wikibooks Contributors",                  year:2023,genre:"Electrical & Electronics",cover:"https://covers.openlibrary.org/b/isbn/9780471445778-L.jpg",read:"https://en.wikibooks.org/wiki/Control_Systems",                           source:"htmlbook",  level:"intermediate",desc:"A comprehensive free Wikibook covering control systems: Laplace transforms, transfer functions, PID controllers, stability analysis, Bode plots, and state-space methods. Fully readable online."},
+
+  /* ══════════════════════════════════════════════
+     ENGINEERING MATHEMATICS — new additions
+  ══════════════════════════════════════════════ */
+  {id:812,title:"Introduction to Linear Algebra (5th Ed.)",      author:"Gilbert Strang (MIT)",                    year:2023,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9781733146678-L.jpg",read:"https://math.mit.edu/~gs/linearalgebra/",                               source:"htmlbook",  level:"intermediate",desc:"Gilbert Strang's classic linear algebra textbook — freely accessible via MIT with supporting video lectures and notes. Essential for data science, ML, and all engineering students."},
+  {id:813,title:"Applied Mathematics — MIT OCW 18.085",          author:"Gilbert Strang (MIT)",                    year:2022,genre:"Engineering Mathematics",cover:"https://covers.openlibrary.org/b/isbn/9780961408817-L.jpg",read:"https://ocw.mit.edu/courses/18-085-computational-science-and-engineering-i-fall-2008/",source:"htmlbook",level:"advanced",desc:"MIT OCW free course on applied mathematics for engineers and scientists: Fourier series, PDEs, finite elements, and scientific computing. Video lectures and notes all freely available."},
+
+];
+
+/* ═══════════════════════════════════════════════ */
+const GENRES = [
+  "All",
+  "AI & Machine Learning","Electrical & Electronics","Civil Engineering","Engineering Mathematics",
+  "Fiction","Non-Fiction",
+  "Classic Literature","Adventure & Mystery","Science & Philosophy"
+];
+let currentGenre = "All";
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function filtered(g){ return (!g||g==="All")?BOOKS:BOOKS.filter(b=>b.genre===g); }
+
+function getLevelBadge(level){
+  if(!level||level==="all") return '';
+  const m={beginner:'lv-beginner',intermediate:'lv-intermediate',advanced:'lv-advanced'};
+  return `<span class="level-tag ${m[level]||''}">${level.charAt(0).toUpperCase()+level.slice(1)}</span>`;
+}
+
+function makeCard(book, delay=0){
+  const s = SOURCES[book.source]||SOURCES.gutenberg;
+  return `<div class="book-card" style="animation-delay:${delay}ms" onclick="openDetail(${book.id})">
+    <span class="ribbon ${s.ribbon}">${s.label.split(' ')[0].toUpperCase()}</span>
+    ${book.cover
+      ? `<img class="book-cover" src="${esc(book.cover)}" alt="${esc(book.title)}" loading="lazy" onerror="this.outerHTML='<div class=\\'cover-ph\\'><i class=\\'fas fa-book\\'></i></div>'">`
+      : `<div class="cover-ph"><i class="fas fa-book"></i></div>`}
+    <div class="book-title">${esc(book.title)}</div>
+    <div class="book-author">${esc(book.author)}</div>
+    <div class="book-genre">${esc(book.genre)}</div>
+    <div class="src-pill"><span class="src-dot ${s.dot}"></span>${s.label}</div>
+    <div class="card-btns">
+      <a class="cb-read" href="${esc(book.read)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+        <i class="fas fa-book-reader"></i> Read
+      </a>
+    </div>
+  </div>`;
+}
+
+function renderHome(){
+  const rows={
+    rowAI:        b=>b.genre==="AI & Machine Learning",
+    rowECE:       b=>b.genre==="Electrical & Electronics",
+    rowCivil:     b=>b.genre==="Civil Engineering",
+    rowMath:      b=>b.genre==="Engineering Mathematics",
+    rowFiction:   b=>b.genre==="Fiction",
+    rowNonFiction:b=>b.genre==="Non-Fiction",
+    rowClassic:   b=>b.genre==="Classic Literature",
+    rowScience:   b=>b.genre==="Science & Philosophy",
+    rowAdventure: b=>b.genre==="Adventure & Mystery",
+  };
+  Object.entries(rows).forEach(([id,fn])=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=BOOKS.filter(fn).slice(0,10).map((b,i)=>makeCard(b,i*40)).join('');
+  });
+}
+
+function renderGenreTabs(){
+  document.getElementById('genreTabs').innerHTML=GENRES.map(g=>{
+    const cnt=g==="All"?BOOKS.length:BOOKS.filter(b=>b.genre===g).length;
+    return `<button class="tab-btn${g===currentGenre?' active':''}" onclick="filterGenre('${g.replace(/'/g,"\\'")}')">${g}<span class="tab-count">${cnt}</span></button>`;
+  }).join('');
+}
+
+function filterGenre(g){ currentGenre=g; showBrowse(); }
+
+function showBrowse(){
+  setPage('pgBrowse'); setNavActive('navHome');
+  renderGenreTabs();
+  const books=filtered(currentGenre);
+  document.getElementById('browseTitle').textContent=currentGenre==="All"?"All Free Books":currentGenre;
+  document.getElementById('browseCount').textContent=`${books.length} books`;
+  document.getElementById('browseGrid').innerHTML=books.map((b,i)=>makeCard(b,Math.min(i*30,600))).join('');
+}
+
+function doSearch(){
+  const q=document.getElementById('searchQ').value.trim().toLowerCase();
+  if(!q){ document.getElementById('searchQ').focus(); return; }
+  const res=BOOKS.filter(b=>
+    b.title.toLowerCase().includes(q)||
+    b.author.toLowerCase().includes(q)||
+    b.genre.toLowerCase().includes(q)||
+    (b.desc&&b.desc.toLowerCase().includes(q))
+  );
+  currentGenre="All";
+  setPage('pgBrowse'); setNavActive('navHome');
+  document.getElementById('genreTabs').innerHTML='';
+  document.getElementById('browseTitle').textContent=`Search: "${document.getElementById('searchQ').value.trim()}"`;
+  document.getElementById('browseCount').textContent=`${res.length} result${res.length!==1?'s':''}`;
+  document.getElementById('browseGrid').innerHTML=res.length
+    ? res.map((b,i)=>makeCard(b,Math.min(i*30,600))).join('')
+    : `<div class="not-found" style="grid-column:1/-1"><div class="nf-ico"><i class="fas fa-search"></i></div><h2>No results found</h2><p>Try a different keyword or browse all books.</p></div>`;
+}
+document.getElementById('searchQ').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+
+function openDetail(id){
+  const book=BOOKS.find(b=>b.id===id);
+  if(!book) return;
+  const s=SOURCES[book.source]||SOURCES.gutenberg;
+  const coverHtml=book.cover
+    ? `<img class="detail-cover" src="${esc(book.cover)}" alt="${esc(book.title)}" onerror="this.outerHTML='<div class=\\'detail-cover-ph\\'><i class=\\'fas fa-book\\'></i></div>'">`
+    : `<div class="detail-cover-ph"><i class="fas fa-book"></i></div>`;
+  const levelBadge=getLevelBadge(book.level);
+  const meta=[
+    book.year?`<span><i class="fas fa-calendar"></i> ${book.year>0?book.year:Math.abs(book.year)+' BCE'}</span>`:'',
+    `<span><i class="fas fa-tag"></i> ${book.genre}</span>`,
+    `<span><i class="fas fa-unlock-alt"></i> Free & Legal</span>`,
+    book.level&&book.level!=="all"?`<span><i class="fas fa-signal"></i> ${book.level.charAt(0).toUpperCase()+book.level.slice(1)}</span>`:''
+  ].filter(Boolean).join('');
+
+  // Note text per source type
+  const noteMap={
+    gutenberg:"This book is in the public domain and freely available on <strong>Project Gutenberg</strong> (gutenberg.org) in multiple formats including EPUB and PDF.",
+    mit:"This book is officially free from <strong>MIT Press</strong>. The publisher has made the full text openly available.",
+    arxiv:"This paper/book is freely available on <strong>arXiv.org</strong>, the open-access academic preprint server.",
+    openlibrary:"Available on <strong>Open Library</strong> (openlibrary.org) — you can read online, borrow digitally, or access preview pages for free.",
+    authorpdf:"The <strong>author(s) have officially released this book as a free PDF</strong> on their personal or institutional website.",
+    cambridge:"Freely available from <strong>Cambridge University Press</strong> as part of their open access programme.",
+    springer:"Freely available from <strong>Springer</strong> as part of their open access programme.",
+    htmlbook:"Freely readable as an <strong>open-access HTML book</strong> — no download required, just open in your browser.",
+    github:"All code and/or content is freely available on <strong>GitHub</strong>. Click to browse notebooks, chapters, and exercises.",
+  };
+  const note=noteMap[book.source]||"This resource is freely and legally available online.";
+
+  document.getElementById('detContent').innerHTML=`
+    <div class="detail-head">
+      ${coverHtml}
+      <div class="detail-info">
+        <h2>${esc(book.title)}${levelBadge}</h2>
+        <div class="det-author">by ${esc(book.author)}</div>
+        <div class="detail-meta">${meta}</div>
+        <div class="src-pill" style="margin-top:.6rem">
+          <span class="src-dot ${s.dot}"></span>${s.label}
+        </div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <p style="color:#555;font-size:.9rem;line-height:1.7;margin-bottom:1.25rem">${esc(book.desc)}</p>
+      <div class="dl-head"><i class="fas fa-external-link-alt"></i> Free Access</div>
+      <div class="dl-grid">
+        <a class="dl-btn ${s.btn}" href="${esc(book.read)}" target="_blank" rel="noopener noreferrer">
+          <i class="fas ${s.icon}"></i> Open on ${s.label}
+        </a>
+      </div>
+      <div class="note-box">
+        <i class="fas fa-info-circle"></i>
+        <span>${note}</span>
+      </div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){ document.getElementById('detailOverlay').classList.remove('open'); }
+
+function setPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function setNavActive(id){
+  document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+function goHome(){
+  setPage('pgHome'); setNavActive('navHome');
+  document.getElementById('searchQ').value='';
+}
+
+function updateAuth(){
+  const ok=localStorage.getItem('lms_login')==='1';
+  const name=localStorage.getItem('lms_name')||'User';
+  document.getElementById('wlcUser').textContent=ok?`Welcome, ${name}`:'';
+  document.getElementById('btnLogin').style.display=ok?'none':'';
+  document.getElementById('btnSignup').style.display=ok?'none':'';
+  document.getElementById('btnLogout').style.display=ok?'':'none';
+}
+function doLogout(){
+  localStorage.removeItem('lms_login');
+  localStorage.removeItem('lms_name');
+  localStorage.removeItem('lms_user');
+  updateAuth(); goHome();
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDetail(); });
+updateAuth();
+renderHome();
+</script>
+</body>
+</html>
